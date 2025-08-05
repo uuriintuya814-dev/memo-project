@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="start.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <title>Focus Up</title>
+</head>
+
+<body>
+
+    <div class="header">
+
+        <div class="logo">
+            MEMO!
+        </div>
+
+        <div class="btns">
+            <a href="#"> <button id="login">Нэвтрэх</button></a>
+            <a href="#"> <button id="signup">Бүртгүүлэх</button></a>
+        </div>
+
+    </div>
+
+    <div class="content">
+        <div class="empty"> </div>
+        <div class="context">
+            <div id="uria">Memo-той хамт ой тогтоолтоо сайжруулцгаая!</div>
+            <div id="uria2">Memo бол оюун ухаан, анхаарал, ой тогтоолтыг сонирхолтой аргаар хөгжүүлэх тоглоомын
+                платформ юм. Хамгийн бага 5 минутын тоглоомоор тархиа дасгалжуул! Яг одоо бүртгүүлээд тоглоорой</div>
+            <div class="games">
+                <div class="game">Game 1</div>
+                <div class="game">Game 2</div>
+                <div class="game">Game 3</div>
+                <div class="game">Game 4</div>
+            </div>
+        </div>
+
+        <div class="img">
+            <img src="images/avatar (4).png" alt="">
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- Login form -->
+    <div id="loginForm" class="popup-form hidden">
+        <button onclick="closeForm()" class="close-btn">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <h2>Нэвтрэх</h2>
+        <input type="text" id="loginUsername" placeholder="Нэвтрэх нэр">
+        <input type="password" id="loginPassword" placeholder="Нууц үг">
+        <button id="btn" onclick="loginUser()">Нэвтрэх</button>
+    </div>
+
+    <!-- Signup form -->
+    <div id="signupForm" class="popup-form hidden">
+        <button onclick="closeForm()" class="close-btn">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <h2>Бүртгүүлэх</h2>
+        <input type="text" id="signupUsername" placeholder="Хэрэглэгчийн нэр">
+        <input type="password" id="signupPassword" placeholder="Нууц үг">
+        <button id="btn" onclick="registerUser()">Бүртгүүлэх</button>
+    </div>
+
+
+    <script>
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+
+        function showForm(type) {
+            if (type === "login")
+                document.getElementById("loginForm").classList.remove("hidden");
+            if (type === "signup")
+                document.getElementById("signupForm").classList.remove("hidden");
+        }
+
+        function closeForm() {
+            document.getElementById("loginForm").classList.add("hidden");
+            document.getElementById("signupForm").classList.add("hidden");
+        }
+
+        function registerUser() {
+            const username = document.getElementById("signupUsername").value;
+            const password = document.getElementById("signupPassword").value;
+
+            const exists = users.find((user) => user.username === username);
+            if (exists) {
+                alert("Хэрэглэгчийн нэр аль хэдийн бүртгэгдсэн байна!");
+                return;
+            }
+
+            users.push({ username, password });
+            localStorage.setItem("users", JSON.stringify(users));
+            alert("Амжилттай бүртгэгдлээ!");
+            closeForm();
+        }
+
+        function loginUser() {
+            const username = document.getElementById("loginUsername").value;
+            const password = document.getElementById("loginPassword").value;
+
+            const user = users.find(
+                (u) => u.username === username && u.password === password
+            );
+            if (user) {
+                localStorage.setItem("loggedInUser", username);
+                window.location.href = "dashboard.html";
+            } else {
+                alert("Нэвтрэх нэр эсвэл нууц үг буруу байна!");
+            }
+        }
+
+        // button дээр onclick event нэмэх:
+        document.getElementById("login").onclick = () => showForm("login");
+        document.getElementById("signup").onclick = () => showForm("signup");
+
+    </script>
+
+</body>
+
+</html>
