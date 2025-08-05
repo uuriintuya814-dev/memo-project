@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="mn">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Reaction Time Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        * {
+            border: 1px dotted rgba(255, 0, 0, 0.366);
+        }
+
+        body {
+            width: 100%;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            align-items: center;
+            background-color: rgb(196, 237, 255);
+        }
+
+        .game-container {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            border-radius: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        #game-box {
+            width: 300px;
+            height: 200px;
+            margin: 30px auto;
+            background-color: #3498db;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        #game-box.ready {
+            background-color: #2ecc71;
+        }
+
+        #game-box.early {
+            background-color: #e74c3c;
+        }
+
+        #controls {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #2c3e50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #34495e;
+        }
+
+        #stats {
+            margin-top: 30px;
+            font-size: 18px;
+        }
+
+        .stat-item {
+            margin: 5px 0;
+        }
+
+        .small {
+            font-size: 14px;
+            color: #bbb;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="game-container">
+        <h1>⚡Reaction Time Pro</h1>
+        <p class="small">Ногоон болход дар. Хурд шалга!</p>
+
+        <div id="game-box">Эхлэхэд бэлэн</div>
+
+        <div id="controls">
+            <button id="start-btn">Эхлэх</button>
+        </div>
+
+
+    </div>
+
+    <div id="stats">
+        <div class="stat-item">Сүүлийн үр дүн: <span id="last-time">–</span></div>
+        <div class="stat-item">Дундаж хариу: <span id="avg-time">–</span></div>
+        <div class="stat-item">Шилдэг амжилт: <span id="best-time">–</span></div>
+    </div>
+
+
+
+
+
+
+
+
+    <script>
+        const box = document.getElementById('game-box');
+        const startBtn = document.getElementById('start-btn');
+        const lastTimeEl = document.getElementById('last-time');
+        const avgTimeEl = document.getElementById('avg-time');
+        const bestTimeEl = document.getElementById('best-time');
+
+        let startTime = 0;
+        let clickable = false;
+        let timeout;
+        let results = [];
+
+        function startGame() {
+            resetBox();
+            const delay = Math.floor(Math.random() * 3000) + 2000;
+
+            timeout = setTimeout(() => {
+                box.classList.add('ready');
+                box.textContent = 'ОДОО ДАР!';
+                startTime = Date.now();
+                clickable = true;
+            }, delay);
+        }
+
+        function resetBox() {
+            box.textContent = 'Түр хүлээнэ үү...';
+            box.style.cursor = 'wait';
+            box.classList.remove('ready', 'early');
+            clickable = false;
+        }
+
+        function updateStats(time) {
+            results.push(time);
+            if (results.length > 10) results.shift();
+
+            const avg = results.reduce((a, b) => a + b, 0) / results.length;
+            const best = Math.min(...results);
+
+            lastTimeEl.textContent = `${time} мс`;
+            avgTimeEl.textContent = `${Math.round(avg)} мс`;
+            bestTimeEl.textContent = `${best} мс`;
+
+            localStorage.setItem('bestReactionTime', best);
+        }
+
+        function loadBest() {
+            const best = localStorage.getItem('bestReactionTime');
+            if (best) {
+                bestTimeEl.textContent = `${best} мс`;
+            }
+        }
+
+        box.addEventListener('click', () => {
+            if (!clickable) {
+                clearTimeout(timeout);
+                box.classList.add('early');
+                box.textContent = 'Хэт эрт дарлаа!';
+                box.style.cursor = 'pointer';
+            } else {
+                const endTime = Date.now();
+                const reaction = endTime - startTime;
+                box.textContent = `${reaction} мс`;
+                box.classList.remove('ready');
+                box.style.cursor = 'pointer';
+                clickable = false;
+                updateStats(reaction);
+            }
+        });
+
+        startBtn.addEventListener('click', () => {
+            startGame();
+        });
+
+        loadBest();
+    </script>
+    <script src="userData.js"></script>
+
+</body>
+
+</html>

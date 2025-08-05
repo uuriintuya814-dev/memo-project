@@ -139,7 +139,7 @@
   gap: 5px;
   box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.07),
     inset -2px -2px 4px rgba(0, 0, 0, 0.063), 3px 6px 10px rgba(0, 0, 0, 0.074);
-    background-color: white
+  background-color: white;
 }
 /* 
 * {

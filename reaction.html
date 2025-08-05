@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="mn">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Memo Dashboard</title>
+    <link rel="stylesheet" href="reaction.css">
+</head>
+
+<body>
+    <!-- PROFILE BAR -->
+    <div class="profile-bar">
+        <div class="profile-pink">
+            <div class="profile-img">
+                <img src="images/pro.jpg" alt="">
+            </div>
+
+            <div class="text">
+                <div style="font-weight: bold;">User Name </div>
+                <div style="color: gray; font-size: 12px;">LV. MASTER KING</div>
+                <div id="process"></div>
+            </div>
+        </div>
+
+        <div class="point">
+            YOUR POINT IS ... / 10000
+        </div>
+    </div>
+
+    <a href="games.html" id="back"><button>БУЦАХ</button></a>
+
+
+
+    <div class="header">
+
+        <div class="currency-container">
+            <div class="currency">
+                <img src="images/coin.png" alt="Gold Coin">
+                <span>4,892</span>
+            </div>
+            <div class="currency">
+                <img src="images/diamond.png" alt="Blue Crystal">
+                <span>8,219</span>
+            </div>
+        </div>
+
+        <div class="btns">
+            <a href="dashboard.html"><button>Профайл</button></a>
+            <a href="games.html"><button>Тоглоом</button></a>
+            <a href="info.html"><button class="active">Мэдээлэл</button></a>
+            <a href="about.html"><button>Бидний тухай</button></a>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="game-window">
+            <h1 class="glow-text">⚡Анхаар & Төвлөр⚡<p class="small"><i>Дүрэм: Ногоон болоход дар. Хурдаа шалга!</i></p>
+            </h1>
+
+
+            <div id="game-box">Эхлэхэд бэлэн</div>
+
+            <div id="controls">
+                <button id="start-btn" onclick="showMotivation()">Эхлэх</button>
+            </div>
+
+        </div>
+
+        <div id="stats">
+            <h1 class="glow-text">⚡Онооны самбар⚡</h1>
+            <div class="stat-item">Сүүлийн үр дүн: <span id="last-time">–</span></div>
+            <div class="stat-item">Дундаж хариу: <span id="avg-time">–</span></div>
+            <div class="stat-item">Шилдэг амжилт: <span id="best-time">–</span></div>
+            <div class="motivation-section">
+                <div id="motivation-text"></div>
+                <div id="motivation-avatar"><img src="images/avatar (6).png" alt=""></div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script>
+        const motivationTexts = [
+            "Чи чадна! 🔥",
+            "Өнөөдөр бол шинэ эхлэл!",
+            "Битгий бууж өг! 💪",
+            "Чиний хүч чадал гайхамшигтай!",
+            "Алдаанаасаа суралц!",
+            "Гялалзаад бай! 🌟",
+            "Чи гайхалтай юм!",
+            "Ялалт ойрхон байна шүү!"
+        ];
+
+        function showMotivation() {
+            const randomIndex = Math.floor(Math.random() * motivationTexts.length);
+            const textEl = document.getElementById("motivation-text");
+            textEl.textContent = motivationTexts[randomIndex];
+        }
+
+
+        const box = document.getElementById('game-box');
+        const startBtn = document.getElementById('start-btn');
+        const lastTimeEl = document.getElementById('last-time');
+        const avgTimeEl = document.getElementById('avg-time');
+        const bestTimeEl = document.getElementById('best-time');
+
+        let startTime = 0;
+        let clickable = false;
+        let timeout;
+        let results = [];
+
+        function startGame() {
+            resetBox();
+            const delay = Math.floor(Math.random() * 3000) + 2000;
+
+            timeout = setTimeout(() => {
+                box.classList.add('ready');
+                box.textContent = 'ОДОО ДАР!';
+                startTime = Date.now();
+                clickable = true;
+            }, delay);
+        }
+
+        function resetBox() {
+            box.textContent = 'Түр хүлээнэ үү...';
+            box.classList.remove('ready', 'early');
+            clickable = false;
+        }
+
+        function updateStats(time) {
+            results.push(time);
+            if (results.length > 10) results.shift();
+
+            const avg = results.reduce((a, b) => a + b, 0) / results.length;
+            const best = Math.min(...results);
+
+            lastTimeEl.textContent = `${time} мс`;
+            avgTimeEl.textContent = `${Math.round(avg)} мс`;
+            bestTimeEl.textContent = `${best} мс`;
+
+            localStorage.setItem('bestReactionTime', best);
+        }
+
+        function loadBest() {
+            const best = localStorage.getItem('bestReactionTime');
+            if (best) {
+                bestTimeEl.textContent = `${best} мс`;
+            }
+        }
+
+        box.addEventListener('click', () => {
+            if (!clickable) {
+                clearTimeout(timeout);
+                box.classList.add('early');
+                box.textContent = 'Хэт эрт дарлаа!';
+                box.style.cursor = 'pointer';
+            } else {
+                const endTime = Date.now();
+                const reaction = endTime - startTime;
+                box.textContent = `${reaction} мс`;
+                box.classList.remove('ready');
+                box.style.cursor = 'pointer';
+                clickable = false;
+                updateStats(reaction);
+            }
+        });
+
+        startBtn.addEventListener('click', () => {
+            startGame();
+        });
+
+        loadBest();
+    </script>
+    <script src="userData.js"></script>
+</body>
+
+</html>
