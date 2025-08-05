@@ -289,3 +289,41 @@ body {
   box-shadow: 40px -34px 0 0 #fff, -28px -6px 0 -2px #fff,
     -24px 17px 0 -6px #fff, -5px 25px 0 -10px #fff;
 }
+/* BACK BUTTON */
+
+#back {
+  position: absolute;
+  left: 2.5rem;
+  bottom: 2rem;
+  width: 280px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 40px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+#back button {
+  width: 270px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #ffb3d1, #ff99bf);
+  border-radius: 30px;
+  box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.142),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.1), 5px 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+  height: 50px;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: none;
+}
+
+#back button:hover {
+  transform: translateY(-3px);
+}

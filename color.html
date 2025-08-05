@@ -31,6 +31,7 @@
             YOUR POINT IS ... / 10000
         </div>
     </div>
+    <a href="games.html" id="back"><button>БУЦАХ</button></a>
 
 
     <!--BUTTONS AND COIN-->
@@ -56,7 +57,7 @@
     </div>
 
 
-<!--SPIN WHEEL-->
+    <!--SPIN WHEEL-->
     <div class="container">
         <h4 align="center" class="thought">Алийг нь тоглохоо <br> мэдэхгүй байна уу?</h4>
         <div class="row">
@@ -91,7 +92,47 @@
 
 
     <div class="game-container">
-        
+        <div class="game-wrapper">
+            <h1>Сонс & Тогтоо <span class="glow-text">15 Өнгө</span></h1>
+            <div id="game-container">
+                <!-- 1-р мөр -->
+                <div class="color-btn" id="red"></div>
+                <div class="color-btn" id="orange"></div>
+                <div class="color-btn" id="yellow"></div>
+                <div class="color-btn" id="lime"></div>
+                <div class="color-btn" id="green"></div>
+
+                <!-- 2-р мөр (төв) -->
+                <div class="color-btn" id="teal"></div>
+                <div class="color-btn" id="cyan"></div>
+                <div class="color-btn" id="center-btn">
+                    <div id="game-info">
+                        <p id="level-display">Түвшин <span>0</span></p>
+                        <button id="start-btn">Эхлэх</button>
+                    </div>
+                </div>
+                <div class="color-btn" id="blue"></div>
+                <div class="color-btn" id="navy"></div>
+
+                <!-- 3-р мөр -->
+                <div class="color-btn" id="purple"></div>
+                <div class="color-btn" id="violet"></div>
+                <div class="color-btn" id="pink"></div>
+                <div class="color-btn" id="rose"></div>
+                <div class="color-btn" id="maroon"></div>
+            </div>
+            <div id="game-status">
+                <p class="status-text" id="sequence-count">
+                    Дарах: <span id="sequence-length">0</span>
+                </p>
+                <p class="status-text" id="click-count">
+                    Таны дарсан: <span id="user-clicks">0</span>
+                </p>
+            </div>
+            <div id="message-container">
+                <p id="level-message"></p>
+            </div>
+        </div>
     </div>
 
 
@@ -101,7 +142,318 @@
 
 
 
+    <script>
+        const colors = [
+            "red", "orange", "yellow", "lime", "green",
+            "teal", "cyan", "blue", "navy", "purple",
+            "violet", "pink", "rose", "maroon"
+        ];
+        let gamePattern = [];
+        let userPattern = [];
+        let level = 0;
+        let gameStarted = false;
 
+        // Дууны давтамжууд
+        const toneMap = {
+            red: 261.63,    // C4
+            orange: 293.66, // D4
+            yellow: 329.63, // E4
+            lime: 349.23,   // F4
+            green: 392.00,  // G4
+            teal: 440.00,   // A4
+            cyan: 493.88,   // B4
+            blue: 523.25,   // C5
+            navy: 587.33,   // D5
+            purple: 659.25, // E5
+            violet: 698.46, // F5
+            pink: 783.99,   // G5
+            rose: 880.00,   // A5
+            maroon: 987.77  // B5
+        };
+
+        document.getElementById("start-btn").addEventListener("click", startGame);
+
+        function startGame() {
+            if (!gameStarted) {
+                gameStarted = true;
+                level = 0;
+                gamePattern = [];
+                userPattern = [];
+                updateLevelDisplay();
+                updateSequenceDisplay();
+                updateClickCount();
+                playSuccessTone();
+                showMessage("Тоглоом эхлэв!", "congrats");
+
+                // Add animation to start button
+                const startBtn = document.getElementById("start-btn");
+                startBtn.classList.add("animate__animated", "animate__pulse");
+
+                setTimeout(() => {
+                    hideMessage();
+                    startBtn.classList.remove("animate__animated", "animate__pulse");
+                    nextSequence();
+                }, 1500);
+            }
+        }
+
+        function nextSequence() {
+            userPattern = [];
+            updateClickCount();
+            level++;
+            updateLevelDisplay();
+
+            // Animate level display
+            const levelDisplay = document.querySelector("#level-display span");
+            levelDisplay.classList.add("animate__animated", "animate__bounceIn");
+            setTimeout(() => {
+                levelDisplay.classList.remove("animate__animated", "animate__bounceIn");
+            }, 1000);
+
+            const colorsToAdd = level < 5 ? 1 : Math.min(3, Math.floor(level / 4) + 1);
+
+            for (let i = 0; i < colorsToAdd; i++) {
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                gamePattern.push(randomColor);
+            }
+
+            updateSequenceDisplay();
+            animateSequence();
+        }
+
+        function animateSequence() {
+            disableUserInput();
+
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < gamePattern.length) {
+                    flashButton(gamePattern[i]);
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    enableUserInput();
+                }
+            }, 700);
+        }
+
+        function flashButton(color) {
+            const button = document.getElementById(color);
+            button.classList.add("active");
+            playTone(toneMap[color]);
+
+            // Add ripple effect
+            const ripple = document.createElement("span");
+            ripple.classList.add("ripple-effect");
+            button.appendChild(ripple);
+
+            setTimeout(() => {
+                button.classList.remove("active");
+                ripple.remove();
+            }, 350);
+        }
+
+        function playTone(frequency, duration = 300) {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.type = 'triangle';
+            oscillator.frequency.value = frequency;
+            gainNode.gain.value = 0.1;
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.start();
+            gainNode.gain.exponentialRampToValueAtTime(
+                0.0001, audioCtx.currentTime + duration / 1000
+            );
+            oscillator.stop(audioCtx.currentTime + duration / 1000);
+        }
+
+        function playSuccessTone() {
+            playTone(523.25, 200); // C5
+            setTimeout(() => playTone(659.25, 300), 200); // E5
+            setTimeout(() => playTone(783.99, 400), 500); // G5
+        }
+
+        function playErrorTone() {
+            playTone(349.23, 200); // F4
+            setTimeout(() => playTone(261.63, 500), 200); // C4
+        }
+
+        function enableUserInput() {
+            colors.forEach((color) => {
+                document.getElementById(color).addEventListener("click", handleUserClick);
+            });
+        }
+
+        function disableUserInput() {
+            colors.forEach((color) => {
+                document.getElementById(color).removeEventListener("click", handleUserClick);
+            });
+        }
+
+        function handleUserClick(event) {
+            const clickedColor = event.target.id;
+            userPattern.push(clickedColor);
+            flashButton(clickedColor);
+            updateClickCount();
+
+            checkAnswer(userPattern.length - 1);
+        }
+
+        function checkAnswer(currentLevel) {
+            if (userPattern[currentLevel] === gamePattern[currentLevel]) {
+                if (userPattern.length === gamePattern.length) {
+                    disableUserInput();
+                    playSuccessTone();
+                    showMessage(`Түвшин ${level} давлаа!`, "congrats");
+
+                    // Add confetti effect for every 3 levels
+                    if (level % 3 === 0) {
+                        createConfetti();
+                    }
+
+                    setTimeout(() => {
+                        hideMessage();
+                        setTimeout(() => {
+                            nextSequence();
+                        }, 500);
+                    }, 1500);
+                }
+            } else {
+                gameOver();
+            }
+        }
+
+        function gameOver() {
+            playErrorTone();
+            const correctColor = gamePattern[userPattern.length - 1];
+            showMessage(`Буруу! Зөв өнгө: ${getColorName(correctColor)}`, "error");
+            disableUserInput();
+            gameStarted = false;
+
+            // Shake animation for all buttons
+            colors.forEach(color => {
+                const btn = document.getElementById(color);
+                btn.classList.add("animate__animated", "animate__shakeX");
+                setTimeout(() => {
+                    btn.classList.remove("animate__animated", "animate__shakeX");
+                }, 1000);
+            });
+
+            setTimeout(() => {
+                hideMessage();
+                resetGame();
+            }, 2500);
+        }
+
+        function getColorName(color) {
+            const names = {
+                red: "Улаан",
+                orange: "Улбар шар",
+                yellow: "Шар",
+                lime: "Ногоон шар",
+                green: "Ногоон",
+                teal: "Ногоон хөх",
+                cyan: "Цэнхэр",
+                blue: "Хөх",
+                navy: "Тэнгэр хөх",
+                purple: "Нил ягаан",
+                violet: "Ягаан",
+                pink: "Ягаан",
+                rose: "Ягаан",
+                maroon: "Хүрэн"
+            };
+            return names[color] || color;
+        }
+
+        function resetGame() {
+            level = 0;
+            gamePattern = [];
+            userPattern = [];
+            updateLevelDisplay();
+            updateSequenceDisplay();
+            updateClickCount();
+        }
+
+        function updateLevelDisplay() {
+            document.querySelector("#level-display span").textContent = level;
+        }
+
+        function updateSequenceDisplay() {
+            document.getElementById("sequence-length").textContent = gamePattern.length;
+        }
+
+        function updateClickCount() {
+            document.getElementById("user-clicks").textContent = userPattern.length;
+        }
+
+        function showMessage(text, type) {
+            const message = document.getElementById("level-message");
+            message.textContent = text;
+            message.className = type;
+            message.classList.add("show", "animate__animated", "animate__fadeInUp");
+        }
+
+        function hideMessage() {
+            const message = document.getElementById("level-message");
+            message.classList.remove("show", "animate__animated", "animate__fadeInUp");
+        }
+
+        function createConfetti() {
+            const confettiContainer = document.createElement("div");
+            confettiContainer.style.position = "fixed";
+            confettiContainer.style.top = "0";
+            confettiContainer.style.left = "0";
+            confettiContainer.style.width = "100%";
+            confettiContainer.style.height = "100%";
+            confettiContainer.style.pointerEvents = "none";
+            confettiContainer.style.zIndex = "1000";
+            document.body.appendChild(confettiContainer);
+
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement("div");
+                confetti.style.position = "absolute";
+                confetti.style.width = "10px";
+                confetti.style.height = "10px";
+                confetti.style.backgroundColor = getRandomColor();
+                confetti.style.borderRadius = "50%";
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.top = "-10px";
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                confetti.style.opacity = "0.8";
+                confettiContainer.appendChild(confetti);
+
+                const animationDuration = Math.random() * 3 + 2;
+                confetti.animate([
+                    { top: "-10px", transform: `rotate(${Math.random() * 360}deg)` },
+                    { top: `${Math.random() * 100 + 100}%`, transform: `rotate(${Math.random() * 360}deg)` }
+                ], {
+                    duration: animationDuration * 1000,
+                    easing: "cubic-bezier(0.1, 0.8, 0.9, 1)"
+                });
+
+                setTimeout(() => {
+                    confetti.remove();
+                }, animationDuration * 1000);
+            }
+
+            setTimeout(() => {
+                confettiContainer.remove();
+            }, 3000);
+        }
+
+        function getRandomColor() {
+            const colors = [
+                "#ff5252", "#ff9800", "#ffeb3b", "#cddc39", "#4caf50",
+                "#009688", "#00bcd4", "#2196f3", "#3f51b5", "#9c27b0",
+                "#673ab7", "#e91e63", "#ff4081", "#795548", "#ffffff"
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+    </script>
 
 
 
