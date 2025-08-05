@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Жимс, Бөмбөг, Мөс — Тоглоом</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #eef4f8;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    #game-area {
+      width: 400px;
+      height: 400px;
+      margin: 20px auto;
+      border: 2px solid #444;
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+      transition: opacity 0.3s ease;
+    }
+    .color-box {
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      cursor: pointer;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      transition: transform 0.2s ease, box-shadow 0.3s;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      user-select: none;
+    }
+    .color-box:hover {
+      transform: scale(1.05);
+    }
+    .color-box:active {
+      transform: scale(0.9);
+    }
+    #score, #timer {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+    #restart-btn {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 6px;
+      background: #3399ff;
+      color: #fff;
+      cursor: pointer;
+    }
+    #restart-btn:hover {
+      background: #2673cc;
+    }
+    .shatter-piece {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      border-radius: 5px;
+      animation: shatter 0.15s forwards;
+    }
+    @keyframes shatter {
+      to {
+        opacity: 0;
+        transform: translate(
+          calc(var(--dx) * 40px),
+          calc(var(--dy) * 40px)
+        ) rotate(calc(var(--rotation) * 360deg));
+      }
+    }
+    #game-area.frozen {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+  </style>
+
+  <!-- 🔊 Дууны эффектүүд -->
+  <audio id="pop-sound" src="https://cdn.pixabay.com/download/audio/2022/03/26/audio_f6c2e25f1c.mp3" preload="auto"></audio>
+  <audio id="bomb-sound" src="https://cdn.pixabay.com/download/audio/2023/03/21/audio_7c0663b6d4.mp3" preload="auto"></audio>
+  <audio id="ice-sound" src="https://cdn.pixabay.com/download/audio/2022/03/28/audio_903b3df7c5.mp3" preload="auto"></audio>
+</head>
+<body>
+
+<h1>💣 Жимс, Бөмбөг, Мөс 🎮</h1>
+<div id="game-area"></div>
+<div id="score">Оноо: 0</div>
+<div id="timer">Цаг: 30</div>
+<button id="restart-btn">Дахин эхлүүлэх</button>
+
+<script>
+  const gameArea = document.getElementById('game-area');
+  const scoreDisplay = document.getElementById('score');
+  const timerDisplay = document.getElementById('timer');
+  const restartBtn = document.getElementById('restart-btn');
+
+  const fruitEmojis = ['🍎', '🍌', '🍇', '🍓', '🍉', '🍒', '🥝'];
+  const bombEmoji = '💣';
+  const iceEmoji = '🧊';
+
+  const boxSize = 40;
+  let score = 0;
+  let timeLeft = 30;
+  let timerId;
+  let bombMoveInterval;
+  let gameActive = false;
+
+  let boxes = [];
+  let bombBox = null;
+  let iceBoxes = [];
+
+  function playSound(id) {
+    const sound = document.getElementById(id);
+    sound.currentTime = 0;
+    sound.play();
+  }
+
+  function isOverlapping(x, y) {
+    const allBoxes = boxes.concat(iceBoxes);
+    for (const box of allBoxes) {
+      const dx = Math.abs(box.offsetLeft - x);
+      const dy = Math.abs(box.offsetTop - y);
+      if (dx < boxSize && dy < boxSize) return true;
+    }
+    if (bombBox) {
+      const dx = Math.abs(bombBox.offsetLeft - x);
+      const dy = Math.abs(bombBox.offsetTop - y);
+      if (dx < boxSize && dy < boxSize) return true;
+    }
+    return false;
+  }
+
+  function getNonOverlappingPosition() {
+    const w = gameArea.clientWidth, h = gameArea.clientHeight;
+    for (let i = 0; i < 100; i++) {
+      const x = Math.floor(Math.random() * (w - boxSize));
+      const y = Math.floor(Math.random() * (h - boxSize));
+      if (!isOverlapping(x, y)) return { x, y };
+    }
+    return null;
+  }
+
+  function shatterEffect(box) {
+    const pieces = [];
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        const piece = document.createElement('div');
+        piece.classList.add('shatter-piece');
+        piece.style.backgroundColor = box.style.backgroundColor;
+        piece.style.left = box.offsetLeft + x * 5 + 'px';
+        piece.style.top = box.offsetTop + y * 5 + 'px';
+        piece.style.setProperty('--dx', (Math.random() - 0.5) * 2);
+        piece.style.setProperty('--dy', (Math.random() - 0.5) * 2);
+        piece.style.setProperty('--rotation', (Math.random() - 0.5) * 2);
+        gameArea.appendChild(piece);
+        pieces.push(piece);
+      }
+    }
+    box.remove();
+    setTimeout(() => pieces.forEach(p => p.remove()), 150);
+  }
+
+  function createFruitBox(x, y) {
+    const box = document.createElement('div');
+    box.classList.add('color-box');
+    box.style.backgroundColor = '#e94e1b';
+    box.textContent = fruitEmojis[Math.floor(Math.random() * fruitEmojis.length)];
+    box.style.left = x + 'px';
+    box.style.top = y + 'px';
+    box.frozen = false;
+
+    box.addEventListener('click', () => {
+      if (!gameActive || box.frozen) return;
+      score++;
+      scoreDisplay.textContent = 'Оноо: ' + score;
+      shatterEffect(box);
+      playSound('pop-sound');
+      boxes = boxes.filter(b => b !== box);
+      addFruitBox();
+      checkLevel();
+    });
+
+    gameArea.appendChild(box);
+    boxes.push(box);
+  }
+
+  function createBombBox(x, y) {
+    const box = document.createElement('div');
+    box.classList.add('color-box');
+    box.style.backgroundColor = '#555';
+    box.textContent = bombEmoji;
+    box.style.left = x + 'px';
+    box.style.top = y + 'px';
+    box.frozen = false;
+
+    box.addEventListener('click', () => {
+      if (!gameActive || box.frozen) return;
+      playSound('bomb-sound');
+      gameOver('💥 Та бөмбөг дарлаа! Тоглоом дууслаа.');
+    });
+
+    gameArea.appendChild(box);
+    bombBox = box;
+
+    // Bomb 5 сек дараа арилна
+    setTimeout(() => {
+      if (box.parentElement && gameActive) {
+        box.remove();
+        bombBox = null;
+      }
+    }, 5000);
+  }
+
+  function createIceBox(x, y) {
+    const box = document.createElement('div');
+    box.classList.add('color-box');
+    box.style.backgroundColor = '#a0d8f0';
+    box.textContent = iceEmoji;
+    box.style.left = x + 'px';
+    box.style.top = y + 'px';
+    box.frozen = false;
+
+    box.addEventListener('click', () => {
+      if (!gameActive || box.frozen) return;
+      box.frozen = true;
+      playSound('ice-sound');
+      box.style.backgroundColor = '#4ca3d8';
+      box.style.opacity = '0.7';
+      freezeAll();
+    });
+
+    gameArea.appendChild(box);
+    iceBoxes.push(box);
+
+    // Мөс 7 сек дараа алга болно
+    setTimeout(() => {
+      if (!box.frozen && box.parentElement && gameActive) {
+        box.remove();
+        iceBoxes = iceBoxes.filter(i => i !== box);
+      }
+    }, 7000);
+  }
+
+  function freezeAll() {
+    gameArea.classList.add('frozen');
+    boxes.forEach(b => b.frozen = true);
+    bombBox && (bombBox.frozen = true);
+    setTimeout(() => {
+      gameArea.classList.remove('frozen');
+      boxes.forEach(b => b.frozen = false);
+      bombBox && (bombBox.frozen = false);
+    }, 3000);
+  }
+
+  function addFruitBox() {
+    if (!gameActive) return;
+    const pos = getNonOverlappingPosition();
+    if (pos) createFruitBox(pos.x, pos.y);
+  }
+
+  function placeBomb() {
+    const pos = getNonOverlappingPosition();
+    if (pos) createBombBox(pos.x, pos.y);
+  }
+
+  function checkLevel() {
+    if (score % 5 === 0) {
+      placeBomb();
+      const pos = getNonOverlappingPosition();
+      if (pos) createIceBox(pos.x, pos.y);
+      bombMoveInterval && clearInterval(bombMoveInterval);
+      bombMoveInterval = setInterval(moveBomb, Math.max(1000, 5000 - score * 100));
+    }
+  }
+
+  function moveBomb() {
+    if (!gameActive || !bombBox) return;
+    const pos = getNonOverlappingPosition();
+    if (pos) {
+      bombBox.style.left = pos.x + 'px';
+      bombBox.style.top = pos.y + 'px';
+    }
+  }
+
+  function startGame() {
+    gameActive = true;
+    score = 0;
+    timeLeft = 30;
+    boxes.forEach(b => b.remove());
+    iceBoxes.forEach(i => i.remove());
+    if (bombBox) bombBox.remove();
+    boxes = [];
+    iceBoxes = [];
+    bombBox = null;
+    scoreDisplay.textContent = 'Оноо: 0';
+    timerDisplay.textContent = 'Цаг: 30';
+    restartBtn.style.display = 'none';
+
+    for (let i = 0; i < 3; i++) {
+      const pos = getNonOverlappingPosition();
+      if (pos) createIceBox(pos.x, pos.y);
+    }
+
+    for (let i = 0; i < 7; i++) addFruitBox();
+    placeBomb();
+
+    timerId && clearInterval(timerId);
+    bombMoveInterval && clearInterval(bombMoveInterval);
+
+    timerId = setInterval(() => {
+      timeLeft--;
+      timerDisplay.textContent = 'Цаг: ' + timeLeft;
+      if (timeLeft <= 0) gameOver('⏱ Цаг дууслаа! Таны оноо: ' + score);
+    }, 1000);
+
+    bombMoveInterval = setInterval(moveBomb, 5000);
+  }
+
+  function gameOver(msg) {
+    clearInterval(timerId);
+    clearInterval(bombMoveInterval);
+    gameActive = false;
+    boxes.forEach(b => b.remove());
+    iceBoxes.forEach(i => i.remove());
+    if (bombBox) bombBox.remove();
+    alert(msg);
+    restartBtn.style.display = 'inline-block';
+  }
+
+  restartBtn.addEventListener('click', startGame);
+  startGame();
+</script>
+
+</body>
+</html>
+fonts.googleapis.com

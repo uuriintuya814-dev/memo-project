@@ -1,0 +1,291 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  width: 100%;
+  background-color: rgb(255, 226, 234);
+  background-image: radial-gradient(#7224583b 1px, transparent 1px);
+  background-size: 24px 24px, cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: sans-serif;
+  height: 100vh;
+  position: relative;
+}
+
+.header {
+  width: 90%;
+  position: relative;
+  margin: 2rem 0 2rem 0;
+  display: flex;
+}
+
+
+.currency-container{
+  position: absolute;
+  left: 20%;
+  display: flex;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 40px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  height: 40px;
+}
+
+.currency {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(145deg, #ffb3d1, #ff99bf);
+  padding: 10px 16px;
+  border-radius: 30px;
+  box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.142),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.1), 5px 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+  margin: 5px;
+}
+
+.currency:hover {
+  transform: translateY(-3px);
+}
+
+.currency img {
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+.currency span {
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  margin-right: 3px;
+}
+
+/* BUTTONS */
+
+.btns {
+  position: absolute;
+  right: 0%;
+  display: flex;
+  gap: 10px;
+}
+.logo {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fc55ab;
+}
+/* Ердийн товч */
+.btns button {
+  padding: 12px 40px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  background-color: transparent;
+  color: #fc55ab;
+  border: 1px solid #fc55ab;
+  box-shadow: 0 0 10px rgba(255, 182, 193, 0.3);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.4s ease;
+  height: 40px;
+}
+
+/* Hover үед */
+.btns button:hover::before,
+.btns button.active::before {
+  opacity: 1;
+}
+
+.btns button:hover,
+.btns button.active {
+  box-shadow: 0 0 20px rgba(242, 130, 205, 0.6);
+  color: white;
+  transform: scale(1.05);
+  border: none;
+}
+
+/* Градиент арын давхарга */
+.btns button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, #fc55ab, #c267fe);
+  z-index: -1;
+  transition: opacity 0.4s ease;
+  opacity: 0;
+  border-radius: 20px;
+}
+
+/*PROFILE BAR*/
+
+.profile-bar {
+  position: absolute;
+  margin-top: 2rem;
+  left: 2.5rem;
+  width: 280px;
+  background: #fc55ab;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  font-family: "Segoe UI", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 111;
+  height: 120px;
+}
+.profile-pink {
+  position: relative;
+  width: 277px;
+  background: white;
+  border-radius: 19px 19px 15px 15px;
+  z-index: 999;
+  height: 80px;
+  margin-top: 1.5px;
+}
+
+.profile-img img {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  object-fit: cover;
+  position: absolute;
+  left: 8px;
+  top: 8px;
+}
+
+.text {
+  position: absolute;
+  left: 76px;
+  top: 8px;
+}
+#process {
+  margin-top: 5px;
+  width: 80%;
+  height: 16px;
+  background-color: rgb(9, 202, 9);
+  border-radius: 0 0 10px 0;
+}
+.point {
+  margin: auto;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+}
+.container {
+  position: absolute;
+  left: 3rem;
+  top: 10rem;
+}
+
+#resultModal {
+  display: none; /* анх нуугдсан */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* black bg */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px 25px;
+  border-radius: 12px;
+  text-align: center;
+  min-width: 250px;
+}
+
+.modal-header h4 {
+  margin: 0;
+  color: green;
+}
+
+.modal-footer button {
+  margin: 5px;
+}
+
+.modal-footer button:hover {
+  background: #c267fe;
+}
+
+.btn {
+  padding: 12px 40px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  background: linear-gradient(120deg, #fc55ab, #c267fe);
+  color: white;
+  border: none;
+  box-shadow: 0 0 10px rgba(255, 182, 193, 0.3);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.4s ease;
+  height: 40px;
+}
+
+.btn:hover {
+  box-shadow: 0 0 20px rgba(242, 130, 205, 0.6);
+  transform: scale(1.05);
+}
+
+#aliig {
+  font-style: italic;
+}
+
+.thought {
+  display: flex;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 30px;
+  min-width: 40px;
+  max-width: 220px;
+  min-height: 40px;
+  margin: 20px;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.07),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.063), 5px 5px 15px rgba(0, 0, 0, 0.074);
+}
+.thought:before,
+.thought:after {
+  content: "";
+  background-color: #fff;
+  border-radius: 50%;
+  display: block;
+  position: absolute;
+  z-index: -1;
+}
+.thought:before {
+  width: 44px;
+  height: 44px;
+  top: -12px;
+  left: 28px;
+  box-shadow: -50px 30px 0 -12px #fff;
+}
+.thought:after {
+  bottom: -10px;
+  right: 26px;
+  width: 30px;
+  height: 30px;
+  box-shadow: 40px -34px 0 0 #fff, -28px -6px 0 -2px #fff,
+    -24px 17px 0 -6px #fff, -5px 25px 0 -10px #fff;
+}
