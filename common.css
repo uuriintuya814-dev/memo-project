@@ -322,6 +322,7 @@ body {
   font-size: 1.5rem;
   font-weight: bold;
   border: none;
+  cursor: pointer;
 }
 
 #back button:hover {

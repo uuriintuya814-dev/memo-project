@@ -99,23 +99,33 @@
             </div>
         </div>
         <div class="dashboard">
-            <h1>Мемо карт <br>(2 тоглогч)</h1> <hr>
+            <h1>🧠 Мемо карт <br><small>(2 тоглогч)</small></h1>
+            <hr>
             <div class="scoreboard">
-                <span>Тоглогч 1 оноо: <b id="score1">0</b></span> 
-                <span>Тоглогч 2 оноо: <b id="score2">0</b></span>
-            </div> <hr>
-            <div class="turn-indicator">Тоглогчийн ээлж: <br><b id="turn">Тоглогч 1</b></div>
+                <div class="score player1">🎀 Тоглогч 1 оноо: <b id="score1">0</b></div>
+                <div class="score player2">🎮 Тоглогч 2 оноо: <b id="score2">0</b></div>
+            </div>
+            <hr>
+            <div class="turn-indicator">🎯 Ээлж: <br><b id="turn">Тоглогч 1</b></div>
         </div>
+
     </div>
 
+
+    <audio id="match-sound" src="sounds/correct-2-46134.mp3" preload="auto"></audio>
+    <audio id="error-sound" src="sounds/negative_beeps-6008.mp3" preload="auto"></audio>
+
+
     <style>
-        hr{
+        hr {
             width: 80%;
             border: 1px solid black;
         }
-        span{
+
+        span {
             font-size: 20px
         }
+
         .game-container {
             position: absolute;
             left: calc(20% + 2.8rem);
@@ -287,7 +297,10 @@
             position: relative;
             background-clip: padding-box;
             color: rgb(61, 0, 61);
+            animation: fadeIn 0.6s ease;
+            font-family: 'Segoe UI', sans-serif;
         }
+
 
         .dashboard::before {
             content: "";
@@ -304,35 +317,124 @@
         }
 
         h1 {
-            margin-bottom: 10px;
-            font-weight: 700;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+            margin: 15px 0 0 0;
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            color: #c32f80;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 small {
+            font-size: 0.7em;
+            color: #7c2475;
+            display: block;
+            margin-top: 5px;
         }
 
         .scoreboard {
-            margin-bottom: 15px;
-            font-size: 18px;
             display: flex;
             flex-direction: column;
-            gap: 30px;
-            font-weight: 600;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            gap: 20px;
+            font-size: 18px;
+            width: 100%;
+            align-items: flex-start;
         }
 
-        .scoreboard span {
-            user-select: none;
+        .score {
+            background: rgba(255, 224, 238, 0.6);
+            border-left: 5px solid #fc55ab;
+            padding: 12px 20px;
+            border-radius: 12px;
+            width: 85%;
+            transition: all 0.3s ease;
+        }
+
+        .score:hover {
+            background: rgba(255, 240, 247, 0.9);
+            transform: scale(1.02);
         }
 
         .turn-indicator {
-            margin-bottom: 15px;
-            font-weight: bold;
-            font-size: 24px;
+            background-color: #ffe0f1;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 1.4rem;
             color: #fc55ab;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 0 12px rgba(252, 85, 171, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .turn-indicator:hover {
+            background-color: #ffd8ef;
+            transform: scale(1.02);
+        }
+
+        /* Animations */
+        @keyframes borderGlow {
+            0% {
+                box-shadow: 0 0 8px #fc55ab;
+            }
+
+            100% {
+                box-shadow: 0 0 20px #c267fe;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pop {
+            animation: pop 0.3s ease;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
     </style>
 
     <script>
+        const matchSound = document.getElementById('match-sound');
+        const errorSound = document.getElementById('error-sound');
+
+
+        function foundMatch() {
+            matchSound.play();
+            // your match logic here
+        }
+
+        function noMatch() {
+            errorSound.play();
+            // your mismatch logic here
+        }
+
+        function updateTurn(player) {
+            document.getElementById('turn').innerText = `Тоглогч ${player}`;
+            const turnBox = document.querySelector('.turn-indicator');
+            turnBox.classList.add('pop');
+            setTimeout(() => turnBox.classList.remove('pop'), 300);
+        }
         const cardsContainer = document.getElementById('cards-container');
 
         // Create 36 cards dynamically (6x6)
@@ -381,12 +483,14 @@
                 if (img1 === img2) {
                     // Matched
                     matched++;
+                    foundMatch();
                     if (playerTurn === 1) {
                         score1++;
                         score1El.innerText = score1;
                     } else {
                         score2++;
                         score2El.innerText = score2;
+                        
                     }
                     cardOne.removeEventListener('click', flipCard);
                     cardTwo.removeEventListener('click', flipCard);
@@ -397,6 +501,7 @@
                     }
                 } else {
                     // Not matched
+                    noMatch();
                     setTimeout(() => {
                         cardOne.classList.add('shake');
                         cardTwo.classList.add('shake');

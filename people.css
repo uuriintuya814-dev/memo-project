@@ -1,0 +1,225 @@
+/* 🎮 GAME CONTAINER LAYOUT */
+.game-container {
+  position: absolute;
+  left: calc(20% + 2.8rem);
+  right: 5%;
+  height: calc(100% - 6rem - 40px);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  margin-top: calc(4rem + 40px);
+}
+
+/* 🧍 AVATAR SECTION */
+.avatar {
+  width: 40%;
+  height: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+.avatar-pic{
+    width: 100%;
+}
+.avatar img {
+  width: 100%;
+
+}
+.avatar-text {
+  width: 80%;
+  height: auto;
+  border: 4px dashed rgb(0, 208, 255);
+  border-radius: 20px;
+  box-sizing: border-box;
+  padding: 20px;
+  background-color: rgb(211, 240, 255);
+}
+
+/* 🔤 TITLE */
+.title {
+  font-size: 1.5rem;
+  text-align: center;
+  color: rgb(0, 32, 97);
+}
+/* 🧠 GAME SECTION */
+.game {
+  width: 70%;
+  height: 100%;
+  background-color: rgb(211, 240, 255);
+  border-radius: 20px;
+  box-shadow: 
+    inset 2px 2px 5px rgba(255, 255, 255, 0.07),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.063),
+    5px 5px 15px rgba(0, 0, 0, 0.074);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  box-sizing: border-box;
+  border: 4px dashed rgb(0, 208, 255);
+}
+
+/* 🖼️ IMAGE BOX */
+#image-box img {
+    margin-top: 30px;
+  width: 250px;
+  height: 250px;
+  border-radius: 20px;
+  
+  object-fit: cover;
+}
+#person-img {
+  transition: opacity 0.3s ease;
+}
+#person-img[src=""] {
+  background-color: #f0f0f0;
+  border: 4px dashed #ccc;
+}
+#person-img:not([src=""]) {
+  background-color: transparent;
+}
+
+/* 🏷️ NAME LABEL */
+#name-label {
+  font-size: 40px;
+  margin: 10px 0;
+  font-weight: bold;
+  color: rgb(0, 208, 255);
+  min-height: 24px;
+}
+
+/* ❓ CHOICES SECTION */
+#choices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  border-radius: 30px;
+  margin-top: 10px;
+  height: auto;
+}
+/* 👀 Only during quiz mode */
+#choices.quiz-mode {
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* 🟦 CHOICE BUTTONS */
+.choice-btn {
+  padding: 10px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #b3efff, #99dfff);
+  border-radius: 25px;
+  box-shadow: 
+    inset 2px 2px 5px rgba(255, 255, 255, 0.142),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.1),
+    5px 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+  height: 50px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.choice-btn:hover {
+  transform: translateY(-3px);
+}
+.choice-btn:focus {
+  outline: 2px solid #006ce7;
+  outline-offset: 2px;
+}
+
+/* ✅ FEEDBACK COLORS */
+.correct {
+  background: none !important;
+  background-color: #43a047 !important;
+  color: white !important;
+}
+
+.wrong {
+  background: none !important;
+  background-color: #e53935 !important;
+  color: white !important;
+}
+
+/* 🚀 START & NEXT BUTTONS */
+#start-btn{
+    margin-top: -50px;
+}
+#start-btn,
+#next-stage-btn {
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #b3ffc7, #37ff94);
+  border-radius: 25px;
+  box-shadow: 
+    inset 2px 2px 5px rgba(255, 255, 255, 0.142),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.1),
+    5px 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+  height: auto;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+#next-stage-btn {
+  display: none;
+}
+
+/* 📊 SCORE & STAGE */
+#score,
+#stage-info {
+  font-weight: bold;
+  color: #333;
+}
+#score {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: #00695c;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 5px 15px;
+  border-radius: 20px;
+}
+#stage-info {
+  font-size: 1.3rem;
+  color: #006ce7;
+  padding: 6px 15px;
+  border-radius: 12px;
+  margin-top: -10px;
+}
+
+/* 🏁 FINAL SCORE & MESSAGE */
+#final-score {
+  font-size: 24px;
+  font-weight: bold;
+  color: #004d40;
+  margin-top: 30px;
+}
+#message {
+  font-size: 20px;
+  margin-top: 15px;
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 768px) {
+  .game-container {
+    flex-direction: column;
+    left: 5%;
+    right: 5%;
+  }
+
+  .avatar,
+  .game {
+    width: 100%;
+    height: auto;
+  }
+}

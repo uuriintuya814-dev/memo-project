@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="mn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memo Dashboard</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Rubik+Scribble&display=swap');
+      :root {
+        --color-primary: #fc55ab;
+        --color-secondary: #c267fe;
+        --color-bg: rgb(255, 226, 234);
+        --color-text: #333;
+        --color-text-dark: #f0f0f0;
+        --color-bg-dark: #222;
+        --color-bg-popup: rgba(0, 0, 0, 0.7);
+        --color-error: #ff4444;
+      }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      body {
+        width: 100%;
+        min-height: 100vh;
+        background-color: var(--color-bg);
+        background-image: radial-gradient(#7224583b 1px, transparent 1px);
+        background-size: 24px 24px, cover;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: sans-serif;
+        position: relative;
+      }
+
+      .header {
+        width: 90%;
+        max-width: 1200px;
+        position: relative;
+        margin: 2rem 0;
+        display: flex;
+        justify-content: center;
+      }
+
+      .logo {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--color-primary);
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+
+      .currency-container {
+        display: flex;
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 40px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        height: 40px;
+        margin-bottom: 1rem;
+      }
+
+      .currency {
+        display: flex;
+        align-items: center;
+        background: linear-gradient(145deg, #ffb3d1, #ff99bf);
+        padding: 10px 16px;
+        border-radius: 30px;
+        box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.142),
+          inset -4px -4px 8px rgba(0, 0, 0, 0.1), 5px 5px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease;
+        margin: 5px;
+      }
+
+      .currency:hover {
+        transform: translateY(-3px);
+      }
+
+      .currency img {
+        width: 28px;
+        height: 28px;
+        margin-right: 10px;
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+      }
+
+      .currency span {
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        margin-right: 3px;
+      }
+
+      /* BUTTONS */
+      .btns {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      /* Ердийн товч */
+      .btns button {
+        padding: 12px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 0.9rem;
+        background-color: transparent;
+        color: var(--color-primary);
+        border: 1px solid var(--color-primary);
+        box-shadow: 0 0 10px rgba(255, 182, 193, 0.3);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        transition: all 0.4s ease;
+        height: 40px;
+        min-width: 100px;
+      }
+
+      /* Hover үед */
+      .btns button:hover::before,
+      .btns button.active::before {
+        opacity: 1;
+      }
+
+      .btns button:hover,
+      .btns button.active {
+        box-shadow: 0 0 20px rgba(242, 130, 205, 0.6);
+        color: white;
+        transform: scale(1.05);
+        border: none;
+      }
+
+      /* Градиент арын давхарга */
+      .btns button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(120deg, var(--color-primary), var(--color-secondary));
+        z-index: -1;
+        transition: opacity 0.4s ease;
+        opacity: 0;
+        border-radius: 20px;
+      }
+
+      /*PROFILE BAR*/
+      .profile-bar {
+        width: 90%;
+        max-width: 280px;
+        background: var(--color-primary);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        font-family: "Segoe UI", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 111;
+        margin: 1rem auto;
+      }
+
+      .profile-pink {
+        position: relative;
+        width: 100%;
+        background: white;
+        border-radius: 19px 19px 15px 15px;
+        z-index: 999;
+        height: 80px;
+      }
+
+      .profile-img img {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        object-fit: cover;
+        position: absolute;
+        left: 8px;
+        top: 8px;
+      }
+
+      .text {
+        position: absolute;
+        left: 76px;
+        top: 8px;
+      }
+
+      #process {
+        margin-top: 5px;
+        width: 80%;
+        height: 16px;
+        background-color: rgb(9, 202, 9);
+        border-radius: 0 0 10px 0;
+      }
+
+      .point {
+        margin: auto;
+        color: white;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 5px 0;
+      }
+
+      #back {
+        width: 90%;
+        max-width: 280px;
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 40px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        margin: 1rem auto;
+      }
+      
+      #back button {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(145deg, #ffb3d1, #ff99bf);
+        border-radius: 30px;
+        box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.142),
+            inset -4px -4px 8px rgba(0, 0, 0, 0.1), 5px 5px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease;
+        height: 50px;
+        color: rgb(237, 229, 229);
+        font-size: 1.2rem;
+        font-weight: bold;
+        border: none;
+      }
+      
+      #back button:hover {
+        transform: translateY(-3px);
+      }
+
+      /* Game container */
+      .game-container {
+        width: 90%;
+        max-width: 1200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        margin: 1rem 0;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      
+      .game-score {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #fff3f8;
+        color: var(--color-primary);
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        z-index: 100;
+      }
+
+      /* Container box */
+      .container {
+        width: 100%;
+        border-radius: 30px;
+        border: 5px solid transparent;
+        background:linear-gradient(#fffde7) padding-box, 
+                  linear-gradient(45deg,#ff69b4,#d289d2,#e75480) border-box;
+        padding: 30px 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        text-align: center;
+        position: relative;
+        transition: background-color 0.5s ease, color 0.5s ease;
+      }
+
+      .avatar-left {
+        display: none;
+      }
+
+      .avatar-right {
+        display: none;
+      }
+
+      /* Buttons */
+      #start-btn, #restart-btn, #input-form button[type="submit"] {
+        background: linear-gradient(120deg,#00bfa5,#a5d6a7);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(5, 3, 4, 0.4);
+        transition: all 0.3s ease;
+        margin: 10px 5px;
+      }
+      
+      #start-btn:hover, #restart-btn:hover, #input-form button[type="submit"]:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(126, 206, 130, 0.5);
+      }
+      
+      #start-btn:active, #restart-btn:active, #input-form button[type="submit"]:active {
+        transform: translateY(-2px);
+      }
+
+      /* Dark mode */
+      body.dark .container {
+        background: #333;
+        color: var(--color-text-dark);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+      }
+
+      /* Headings */
+      h1 {
+        font-family: "Rubik Scribble", system-ui;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        font-weight: 700;
+        color: lightseagreen;
+      }
+
+      /* Word list */
+      .word-list {
+        font-size: 1.1rem;
+        letter-spacing: 2px;
+        margin: 15px 0;
+        min-height: 60px;
+        user-select: none;
+        color: var(--color-primary);
+        font-weight: 500;
+        opacity: 0;
+        transition: opacity 0.7s ease;
+        word-wrap: break-word;
+        padding: 10px;
+        background: linear-gradient(135deg , #d3d8dd,#FFB6C1);
+        border-radius: 10px;
+      }
+      
+      .word-list.show {
+        opacity: 1;
+      }
+
+      /* Timer */
+      #timer {
+        font-size: 1.4rem;
+        color: var(--color-error);
+        font-weight: 300;
+        margin: 15px 0;
+        min-height: 30px;
+      }
+
+      .bubble-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 0;
+      }
+
+      .bubble {
+        position: absolute;
+        bottom: -100px;
+        background: rgba(194, 132, 187, 0.4);
+        border-radius: 50%;
+        opacity: 0.7;
+        animation-name: rise;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+
+      /* Бөмбөлөг дээш дээш гүйх анимаци */
+      @keyframes rise {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 0.7;
+        }
+        50% {
+          transform: translateY(-50vh) scale(1.2);
+          opacity: 0.9;
+        }
+        100% {
+          transform: translateY(-100vh) scale(1);
+          opacity: 0;
+        }
+      }
+
+      /* Текстийн талбарын засварын стилүүд */
+      #input-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-top: 20px;
+      }
+      
+      #user-input {
+        width: 90%;
+        max-width: 500px;
+        height: 100px;
+        margin: 15px 0;
+        padding: 15px;
+        font-size: 1rem;
+        border: 2px solid var(--color-primary);
+        border-radius: 12px;
+        background-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        resize: vertical;
+        transition: all 0.3s ease;
+      }
+      
+      #user-input:focus {
+        border-color: #d43d8d;
+        box-shadow: 0 0 10px rgba(252, 85, 171, 0.5);
+        outline: none;
+      }
+      
+      #input-form button[type="submit"] {
+        width: 180px;
+        background: linear-gradient(120deg, var(--color-primary), var(--color-secondary));
+        color: white;
+        border: none;
+        font-weight: bold;
+        padding: 12px 25px;
+        border-radius: 30px;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+      
+      #input-form button[type="submit"]:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(252, 85, 171, 0.6);
+      }
+      
+      .input-label {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--color-primary);
+        margin-bottom: 10px;
+        text-align: center;
+      }
+
+      /* Input */
+      #user-input {
+        height: 100px;
+        width: 90%;
+        max-width: 500px;
+        background: rgba(252, 85, 171, 0.05);
+        color: var(--color-text);
+      }
+
+      .input-label {
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--color-dark);
+        display: block;
+        z-index: 1400;
+        margin-bottom: 8px;
+        max-width: 500px;
+      }
+
+      /* Utility */
+      .hidden { display: none; }
+      .fade-in { opacity: 1; transition: opacity 0.4s ease-in; }
+      .fade-out { opacity: 0; transition: opacity 0.7s ease-out; }
+      .show { display: block; }
+
+      /* Level Up Animation */
+      @keyframes levelUpAnim {
+          0% {
+              opacity: 0;
+              transform: translate(-50%, -50%) scale(0.3);
+              text-shadow: 0 0 0px rgba(252, 85, 171, 0);
+          }
+          30% {
+              opacity: 1;
+              transform: translate(-50%, -50%) scale(1.3);
+              text-shadow: 0 0 20px rgba(252, 85, 171, 0.8),
+                           0 0 40px rgba(194, 103, 254, 0.6),
+                           0 0 60px rgba(255, 255, 255, 0.4);
+          }
+          60% {
+              transform: translate(-50%, -50%) scale(0.9);
+              text-shadow: 0 0 15px rgba(252, 85, 171, 0.7),
+                           0 0 30px rgba(194, 103, 254, 0.5);
+          }
+          80% {
+              transform: translate(-50%, -50%) scale(1.1);
+              text-shadow: 0 0 25px rgba(252, 85, 171, 0.9),
+                           0 0 45px rgba(194, 103, 254, 0.7),
+                           0 0 65px rgba(255, 255, 255, 0.5);
+          }
+          100% {
+              opacity: 0;
+              transform: translate(-50%, -50%) scale(0.5);
+              text-shadow: 0 0 5px rgba(252, 85, 171, 0.2);
+          }
+      }
+      
+      #levelUpMessage {
+          position: fixed;
+          align-items: center;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) scale(0.5);
+          background: linear-gradient(45deg, rgba(179, 153, 166, 0.9), rgba(194,103,254,0.85));
+          color: white;
+          padding: 20px 40px;
+          border-radius: 16px;
+          font-size: 2rem;
+          font-weight: 900;
+          opacity: 0;
+          pointer-events: none;
+          z-index: 10000;
+          user-select: none;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+          animation: levelUpAnim 1.2s ease-out forwards;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          box-shadow: 0 0 50px rgba(252, 85, 171, 0.6);
+      }
+
+      /* Game Over Popup */
+      #gameOverPopup {
+          display: none;
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: var(--color-bg-popup);
+          align-items: center;
+          justify-content: center;
+          z-index: 11000;
+      }
+      
+      #popupContent {
+          background: white;
+          color: var(--color-text);
+          padding: 25px;
+          border-radius: 16px;
+          text-align: center;
+          width: 90%;
+          max-width: 300px;
+          box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+          user-select: none;
+      }
+      
+      #popupContent h2 {
+          margin-bottom: 15px;
+          font-size: 1.5rem;
+          color: var(--color-error);
+      }
+      
+      #popupContent p {
+          margin: 8px 0;
+          font-size: 1.1rem;
+          font-weight: 700;
+      }
+      
+      #popupContent button {
+          margin-top: 20px;
+          background-color: var(--color-primary);
+          padding: 12px 20px;
+          font-size: 1rem;
+          border-radius: 10px;
+          box-shadow: 0 5px 15px rgba(10,116,218,0.6);
+          transition: background-color 0.3s ease, transform 0.2s ease;
+          border: none;
+          color: white;
+      }
+      
+      #popupContent button:hover {
+          background-color: #d43d8d;
+          transform: scale(1.07);
+      }
+
+      /* Restart Button */
+      #popupRestartBtn {
+          background-color: #d43d8d;
+          color: white;
+          padding: 10px 20px;
+          font-size: 16px;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+      }
+      
+      #popupRestartBtn:hover {
+          background-color: #ff99bf;
+          transform: scale(1.1);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Background bubble animation */
+      .bubble-wrapper {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          z-index: 0;
+          overflow: hidden;
+      }
+
+      @keyframes pulseColor {
+          0% {
+              transform: scale(1);
+              background-color: #bd1994;
+              box-shadow: 0 0 10px #48d724;
+          }
+          50% {
+              transform: scale(1.5);
+              background-color: #ff85c1;
+              box-shadow: 0 0 20px #3c1f9d;
+          }
+          100% {
+              transform: scale(1);
+              background-color: #ff69b4;
+              box-shadow: 0 0 10px #e9470c;
+          }
+      }
+
+      /* Result styles */
+      .result {
+        margin: 15px 0;
+        font-size: 1.2rem;
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 8px;
+      }
+      
+      .correct {
+        background-color: rgba(0, 200, 0, 0.2);
+        color: green;
+      }
+      
+      .incorrect {
+        background-color: rgba(255, 0, 0, 0.2);
+        color: red;
+      }
+
+      /* Responsive */
+      @media (min-width: 768px) {
+        .header {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+        
+        .currency-container {
+          position: static;
+          margin-bottom: 0;
+        }
+        
+        .btns {
+          position: static;
+        }
+        
+        h1 {
+          font-size: 2.5rem;
+        }
+        
+        .word-list {
+          font-size: 1.3rem;
+          min-height: 80px;
+        }
+        
+        #timer {
+          font-size: 1.8rem;
+        }
+        
+        .avatar-left {
+          display: block;
+          width: 200px;
+          position: absolute;
+          left: -100px;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 1266;
+        }
+        
+        .avatar-right {
+          display: block;
+          width: 200px;
+          position: absolute;
+          right: -100px;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 1266;
+        }
+        
+        #levelUpMessage {
+          font-size: 3rem;
+          padding: 30px 60px;
+        }
+        
+        #popupContent {
+          width: 320px;
+          padding: 30px 35px;
+        }
+        
+        #popupContent h2 {
+          font-size: 2rem;
+        }
+        
+        #popupContent p {
+          font-size: 1.3rem;
+        }
+        
+        #popupContent button {
+          padding: 14px 26px;
+          font-size: 1.2rem;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .avatar-left {
+          width: 300px;
+          left: -150px;
+        }
+        
+        .avatar-right {
+          width: 280px;
+          right: -140px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- PROFILE BAR -->
+    <div class="profile-bar">
+      <div class="profile-pink">
+        <div class="profile-img">
+          <img src="images/pro.jpg" alt="Profile" />
+        </div>
+
+        <div class="text">
+          <div style="font-weight: bold">User Name</div>
+          <div style="color: gray; font-size: 12px">LV. MASTER KING</div>
+          <div id="process"></div>
+        </div>
+      </div>
+
+      <div class="point">YOUR POINT IS ... / 10000</div>
+    </div>
+
+    <div class="header">
+      <div class="currency-container">
+        <div class="currency">
+          <img src="images/coin.png" alt="Gold Coin" />
+          <span>4,892</span>
+        </div>
+        <div class="currency">
+          <img src="images/diamond.png" alt="Blue Crystal" />
+          <span>8,219</span>
+        </div>
+      </div>
+
+      <div class="btns">
+        <a href="dashboard.html"><button>Профайл</button></a>
+        <a href="games.html" class="active"><button>Тоглоом</button></a>
+        <a href="info.html"><button>Мэдээлэл</button></a>
+        <a href="about.html"><button>Бидний тухай</button></a>
+      </div>
+    </div>
+
+    <div class="game-container">
+      <div class="game-score">🎯 Оноо: <span id="score">0</span></div>
+      <div class="container">
+        <h1>Анхаарал Төвлөрлийн Тоглоом - Үе тус бүр үг нэмэгдэх</h1>
+
+        <img src="images/avatar (4).png" alt="Зураг 1" class="avatar-left" />
+        <img src="images/avatar (1).png" alt="Зураг 2" class="avatar-right" />
+
+        <div class="bubble-wrapper"></div>
+
+        <div id="timer">Тоглоом эхлэхэд бэлэн!</div>
+        <div id="word-list" class="word-list"></div>
+
+        <button id="start-btn">Тоглоом Эхлүүлэх</button>
+
+        <form id="input-form" class="hidden" autocomplete="off">
+          <label for="user-input" class="input-label">
+            Үгсийг санасан дарааллаар нь бичнэ үү:
+          </label>
+          <textarea
+            id="user-input"
+            class="input-textarea"
+            placeholder="Үгсийг хооронд нь зайгаар тусгаарлан бичнэ үү..."
+          ></textarea>
+          <button type="submit">Шалгах</button>
+        </form>
+
+        <div id="result" class="result"></div>
+        <button id="restart-btn" class="hidden">Дахин Тоглох</button>
+      </div>
+
+      <!-- Level Up Message -->
+      <div id="levelUpMessage" aria-live="polite" role="alert"></div>
+
+      <!-- Game Over Popup -->
+      <div
+        id="gameOverPopup"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="gameOverTitle"
+      >
+        <div id="popupContent">
+          <h2 id="gameOverTitle">❌ Тоглоом Дууслаа!</h2>
+          <p>Оноо: <span id="finalScore">0</span></p>
+          <p>🏆 Хамгийн өндөр оноо: <span id="popupHighScore">0</span></p>
+          <button id="popupRestartBtn">🔄 Дахин Эхлүүлэх</button>
+        </div>
+      </div>
+    </div>
+
+    <a href="games.html" id="back"><button>БУЦАХ</button></a>
+
+    <script>
+      // Хэрэглэгчийн үгс
+      const allWords = [
+        "Ном",
+        "Цэцэг",
+        "Цонх",
+        "Үүл",
+        "Сүүл",
+        "Тэмээ",
+        "Гэр",
+        "Улаан",
+        "Уул",
+        "Наран",
+        "Мөнгөн",
+        "Хаалга",
+        "Цаг",
+        "Өндөр",
+        "Шар",
+        "Хавар",
+        "Цэцэрлэг",
+        "Хонх",
+        "Хаан",
+        "Тэнгэр",
+        "Нохой",
+        "Муур",
+        "Гудамж",
+        "Сурагч",
+        "Сургууль",
+        "Ус",
+        "Талбай",
+        "Хоол",
+        "Уух",
+        "Наран",
+        "Шар",
+        "Сонгино",
+        "Гурил",
+        "Тахиа",
+        "Үхэр",
+        "Мод",
+        "Үсэг",
+        "Нүд",
+        "Чих",
+        "Ам",
+        "Гараа",
+        "Хөл",
+        "Цээж",
+        "Зүрх",
+        "Толгой",
+        "Агаар",
+        "Дэлхий",
+        "Сар",
+        "Од",
+        "Мөч",
+        "Тэнгэр",
+        "Улаан",
+        "Шар",
+        "Гэрэл",
+        "Цэцэгс",
+        "Мөнх",
+        "Говь",
+        "Нар",
+        "Цас",
+        "Салхи",
+      ];
+
+      // DOM элементийг авна
+      const wordListDiv = document.getElementById("word-list");
+      const timerDiv = document.getElementById("timer");
+      const startBtn = document.getElementById("start-btn");
+      const inputForm = document.getElementById("input-form");
+      const userInput = document.getElementById("user-input");
+      const resultDiv = document.getElementById("result");
+      const restartBtn = document.getElementById("restart-btn");
+      const levelUpMessage = document.getElementById("levelUpMessage");
+      const gameOverPopup = document.getElementById("gameOverPopup");
+      const finalScoreEl = document.getElementById("finalScore");
+      const popupHighScoreEl = document.getElementById("popupHighScore");
+      const popupRestartBtn = document.getElementById("popupRestartBtn");
+
+      // Тоглоомын хувьсагчид
+      let timerInterval;
+      let countdown = 10;
+      let currentWords = [];
+      let currentStage = 0;
+      const totalStages = 10;
+      let highScore = localStorage.getItem("memoryGameHighScore") || 0;
+      highScore = Number(highScore);
+
+      // Түвшний үгсийн тоо
+      function wordsCountForStage(stage) {
+        return stage + 2;
+      }
+
+      // Массиваар санамсаргүй эргүүлэх функц
+      function shuffleArray(array) {
+        let arr = array.slice();
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      // Үгсийг үзүүлэх функц
+      function showWordsWithAnimation(words) {
+        wordListDiv.textContent = words.join("  |  ");
+        wordListDiv.classList.add("show");
+      }
+
+      function hideWordsWithAnimation(callback) {
+        wordListDiv.classList.remove("show");
+        setTimeout(() => {
+          wordListDiv.textContent = "";
+          if (callback) callback();
+        }, 700);
+      }
+
+      // Таймер эхлүүлэх
+      function startTimer() {
+        countdown = 10;
+        timerDiv.textContent = `Үлдсэн цаг: ${countdown} сек`;
+        timerInterval = setInterval(() => {
+          countdown--;
+          if (countdown <= 0) {
+            clearInterval(timerInterval);
+            timerDiv.textContent = "";
+            hideWordsWithAnimation(() => {
+              inputForm.classList.remove("hidden");
+              userInput.focus();
+            });
+          } else {
+            timerDiv.textContent = `Үлдсэн цаг: ${countdown} сек`;
+          }
+        }, 1000);
+      }
+
+      // Одоогийн үеийн үгсийг харуулах
+      function showStageWords() {
+        const count = wordsCountForStage(currentStage);
+        const stageWords = currentWords.slice(0, count);
+        showWordsWithAnimation(stageWords);
+      }
+
+      // Тоглоом эхлүүлэх
+      function startGame() {
+        score = 0; // Оноог дахин 0 болгох
+        updateScore(0); // дэлгэц шинэчлэх
+        startBtn.disabled = true;
+        restartBtn.classList.add("hidden");
+        resultDiv.textContent = "";
+        userInput.value = "";
+        inputForm.classList.add("hidden");
+        currentStage = 0;
+        currentWords = shuffleArray(allWords).slice(
+          0,
+          wordsCountForStage(totalStages - 1)
+        );
+        showStageWords();
+        startTimer();
+      }
+
+      // Хэрэглэгчийн хариуг шалгах (true/false буцаана)
+      function checkAnswer(userText) {
+        let userWords = userText.trim().split(/\s+/);
+        const expectedWords = currentWords.slice(
+          0,
+          wordsCountForStage(currentStage)
+        );
+
+        if (userWords.length !== expectedWords.length) return false;
+
+        for (let i = 0; i < expectedWords.length; i++) {
+          if (userWords[i] !== expectedWords[i]) return false;
+        }
+        return true;
+      }
+
+      let score = 0;
+
+      function updateScore(points) {
+        score += points;
+        document.getElementById("score").textContent = score;
+      }
+
+      // Тоглоомын үйлдэл
+      inputForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        clearInterval(timerInterval);
+        timerDiv.textContent = "";
+
+        const userText = userInput.value;
+        if (checkAnswer(userText)) {
+          updateScore(10); // Оноо нэмэх
+
+          resultDiv.textContent = `🎉 ${currentStage + 1}-р үе амжилттай!`;
+          resultDiv.className = "result correct";
+
+          currentStage++;
+          inputForm.classList.add("hidden");
+          userInput.value = "";
+
+          if (currentStage >= totalStages) {
+            resultDiv.textContent = "🌟 Маш сайн! Бүх үеийг давлаа.";
+            restartBtn.classList.remove("hidden");
+            startBtn.disabled = true;
+          } else {
+            showLevelUpMessage(currentStage + 1);
+            setTimeout(() => {
+              resultDiv.textContent = "";
+              showStageWords();
+              startTimer();
+              inputForm.classList.add("hidden");
+            }, 1500);
+          }
+        } else {
+          resultDiv.textContent = "❌ Алдаа гарлаа. Тоглоом дууслаа.";
+          resultDiv.className = "result incorrect";
+          showCorrectSequence();
+          gameOver();
+        }
+      });
+      
+      // Түвшин ахисан мессеж харуулах
+      function showLevelUpMessage(level) {
+        levelUpMessage.textContent = `🎉 Түвшин ${level} ахив!`;
+        levelUpMessage.style.animation = "none";
+        void levelUpMessage.offsetWidth;
+        levelUpMessage.style.animation = "levelUpAnim 1.5s ease forwards";
+      }
+
+      // Зөв дараалал харуулах
+      function showCorrectSequence() {
+        const expectedWords = currentWords.slice(
+          0,
+          wordsCountForStage(currentStage)
+        );
+        resultDiv.innerHTML += `<br>Зөв дараалал: <span style="color:${getComputedStyle(
+          document.body
+        )
+          .getPropertyValue("--color-primary")
+          .trim()};">${expectedWords.join(", ")}</span>`;
+      }
+
+      // Тоглоом дуусгах
+      function gameOver() {
+        finalScoreEl.textContent = (currentStage * 10).toString();
+        if (currentStage * 10 > highScore) {
+          highScore = currentStage * 10;
+          localStorage.setItem("memoryGameHighScore", highScore);
+        }
+        popupHighScoreEl.textContent = highScore;
+        gameOverPopup.style.display = "flex";
+        inputForm.classList.add("hidden");
+        restartBtn.classList.add("hidden");
+        startBtn.disabled = true;
+        timerDiv.textContent = "";
+        wordListDiv.textContent = "";
+        resultDiv.textContent = "";
+      }
+
+      startBtn.addEventListener("click", startGame);
+      restartBtn.addEventListener("click", () => {
+        resultDiv.textContent = "";
+        userInput.value = "";
+        timerDiv.textContent = "";
+        startBtn.disabled = false;
+        restartBtn.classList.add("hidden");
+        wordListDiv.textContent = "";
+        currentStage = 0;
+      });
+
+      popupRestartBtn.addEventListener("click", () => {
+        gameOverPopup.style.display = "none";
+        resultDiv.textContent = "";
+        userInput.value = "";
+        timerDiv.textContent = "";
+        startBtn.disabled = false;
+        restartBtn.classList.add("hidden");
+        wordListDiv.textContent = "";
+        currentStage = 0;
+      });
+
+      const bubbleWrapper = document.querySelector('.bubble-wrapper');
+
+      function createBubble() {
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+
+        // Санамсаргүй хэмжээ (15px-60px)
+        const size = Math.random() * 45 + 15;
+        bubble.style.width = size + 'px';
+        bubble.style.height = size + 'px';
+
+        // Санамсаргүй зүүн байрлал (0%-ээс 100%)
+        bubble.style.left = Math.random() * 100 + 'vw';
+
+        // Санамсаргүй хугацаа (5-12 секунд)
+        const duration = Math.random() * 7 + 5;
+        bubble.style.animationDuration = duration + 's';
+
+        bubbleWrapper.appendChild(bubble);
+
+        // Анимаци дууссаны дараа устгах
+        bubble.addEventListener('animationend', () => {
+          bubble.remove();
+        });
+      }
+
+      // Байнга 400мс тутам шинэ bubble үүсгэнэ
+      setInterval(createBubble, 400);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="mn">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Би Хэн Бэ?</title>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="people.css">
+    <!-- jQuery & SweetAlert -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+</head>
+
+<body>
+    <!-- PROFILE BAR -->
+    <div class="profile-bar">
+        <div class="profile-pink">
+            <div class="profile-img">
+                <img src="images/pro.jpg" alt="">
+            </div>
+            <div class="text">
+                <div style="font-weight: bold;">User Name </div>
+                <div style="color: gray; font-size: 12px;">LV. MASTER KING</div>
+                <div id="process"></div>
+            </div>
+
+        </div>
+        <div class="point">
+            YOUR POINT IS ... / 10000
+        </div>
+    </div>
+    <a href="games.html" id="back"><button>БУЦАХ</button></a>
+
+    <!--BUTTONS AND COIN-->
+    <div class="header">
+
+        <div class="currency-container">
+            <div class="currency">
+                <img src="images/coin.png" alt="Gold Coin">
+                <span>4,892</span>
+            </div>
+            <div class="currency">
+                <img src="images/diamond.png" alt="Blue Crystal">
+                <span>8,219</span>
+            </div>
+        </div>
+
+        <div class="btns">
+            <a href="dashboard.html"><button>Профайл</button></a>
+            <a href="games.html"><button class="active">Тоглоом</button></a>
+            <a href="info.html"><button>Мэдээлэл</button></a>
+            <a href="about.html"><button>Бидний тухай</button></a>
+        </div>
+    </div>
+
+
+    <!--SPIN WHEEL-->
+    <div class="container">
+        <h4 align="center" class="thought">Алийг нь тоглохоо <br> мэдэхгүй байна уу?</h4>
+        <div class="row">
+            <div class="col-xs-12" align="center">
+                <div id="wheel">
+                    <canvas id="canvas" width="260" height="260"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-xs-12" align="center">
+                <button onclick="startSpin()" class="btn">Эргүүлэх</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPIN RESPONSE -->
+    <div id="resultModal">
+        <div class="modal-content">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body" id="modalBodyText">
+                <!-- Үр дүн энд гарна -->
+            </div>
+            <div class="modal-footer">
+                <button onclick="hideModal()" class="btn">Тоглох</button>
+                <button onclick="hideModal()" class="btn">Гарах</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="game-container">
+        <div class="avatar">
+            <div class="avatar-pic"><img src="images/avatar (3).png" alt=""></div>
+            <div class="avatar-text">
+                <div class="title">Царай болон нэр цээжлэх тоглоом тоглоцгооё</div>
+            </div>
+
+        </div>
+        <div class="game">
+
+            <div id="image-box">
+                <img id="person-img" src="people/start.png" alt="" />
+            </div>
+            <div id="name-label"></div>
+            <div id="stage-info"></div>
+            <div id="choices"></div>
+            <div id="score"></div>
+            <div id="message"></div>
+            <button id="start-btn">Тоглоом эхлэх</button>
+            <button id="next-stage-btn">Дараагийн шат эхлэх</button>
+            <div id="final-score"></div>
+        </div>
+    </div>
+
+
+
+    <script>
+        const names = [
+            "Үлэмж", "Алтантөгс", "Тэнүүн", "Учрал", "Мөнх-насан", "Цэрэн", "Саруул", "Ивээл", "Хонгор", "Энгүүн",
+            "Гэрэлт", "Анар", "Мөрөн", "Өнөр", "Намуун", "Хишигээ", "Сэцэн", "Тэмүүлэн", "Тэргэл", "Номин",
+            "Энхээ", "Тогтуун", "Мөнхжин", "Болор", "Үйлст", "Цэлмэг", "Дөлгөөн", "Халиун", "Ирээдүй", "Анир"
+        ];
+
+        const images = [
+            "people/1.jpg", "people/2.jpg", "people/3.jpg", "people/4.jpg", "people/5.jpg",
+            "people/6.jpg", "people/7.jpg", "people/8.jpg", "people/9.jpg", "people/10.jpg",
+            "people/11.jpg", "people/12.jpg", "people/13.jpg", "people/14.jpg", "people/15.jpg",
+            "people/16.jpg", "people/17.jpg", "people/18.jpg", "people/19.jpg", "people/20.jpg",
+            "people/21.jpg", "people/22.jpg", "people/23.jpg", "people/24.jpg", "people/25.jpg",
+            "people/26.jpg", "people/27.jpg", "people/28.jpg", "people/29.jpg", "people/30.jpg"
+        ];
+
+        const people = Array.from({ length: 30 }, (_, i) => ({
+            name: names[i],
+            image: images[i]
+        }));
+
+
+
+        const stages = [5, 10, 15];
+        let currentStage = 0;
+        let stageScore = 0;
+        let totalScore = 0;
+        let memoryList = [];
+        let quizList = [];
+        let currentQuizIndex = 0;
+
+        const img = document.getElementById("person-img");
+        const nameLabel = document.getElementById("name-label");
+        const choices = document.getElementById("choices");
+        const stageInfo = document.getElementById("stage-info");
+        const score = document.getElementById("score");
+        const startBtn = document.getElementById("start-btn");
+        const nextStageBtn = document.getElementById("next-stage-btn");
+        const finalScore = document.getElementById("final-score");
+        const message = document.getElementById("message");
+
+        startBtn.onclick = startGame;
+        nextStageBtn.onclick = () => {
+            currentStage++;
+            message.textContent = "";
+            nextStageBtn.style.display = "none";
+            if (currentStage < stages.length) {
+                startStage();
+            } else {
+                showFinalScore();
+            }
+        };
+
+        function startGame() {
+            currentStage = 0;
+            totalScore = 0;
+            startBtn.style.display = "none";
+            finalScore.textContent = "";
+            message.textContent = "";
+            startStage();
+        }
+
+        function startStage() {
+            stageScore = 0;
+            currentQuizIndex = 0;
+            memoryList = shuffle([...people]).slice(0, stages[currentStage]);
+            quizList = [...memoryList];
+            showMemory(0);
+        }
+
+        function showMemory(i) {
+            if (i >= memoryList.length) {
+                setTimeout(() => showQuiz(0), 1000);
+                return;
+            }
+            const person = memoryList[i];
+            img.src = person.image;
+            nameLabel.textContent = person.name;
+            choices.classList.remove("quiz-mode");
+            choices.innerHTML = "";
+            score.textContent = `🧠 Санах хэсэг (${i + 1}/${memoryList.length})`;
+            stageInfo.textContent = `${currentStage + 1}-р шат`;
+            setTimeout(() => showMemory(i + 1), 1500);
+        }
+
+        function showQuiz(i) {
+            if (i >= quizList.length) {
+                score.textContent = `Оноо: ${stageScore}/${quizList.length}`;
+                stageInfo.textContent = `${currentStage + 1}-р шат дууслаа!`;
+                message.textContent = "";
+                totalScore += stageScore;
+                nextStageBtn.style.display = "inline-block";
+                return;
+            }
+
+            const person = quizList[i];
+            img.src = person.image;
+            nameLabel.textContent = "";
+            stageInfo.textContent = `🧐 Хэн бэ❓ (${i + 1}/${quizList.length})`;
+            score.textContent = `Оноо: ${stageScore}`;
+
+            const options = [person.name];
+            while (options.length < 4) {
+                const rand = people[Math.floor(Math.random() * people.length)].name;
+                if (!options.includes(rand)) options.push(rand);
+            }
+
+            shuffle(options);
+            choices.classList.add("quiz-mode");
+            choices.innerHTML = "";
+            options.forEach(name => {
+                const btn = document.createElement("button");
+                btn.className = "choice-btn";
+                btn.textContent = name;
+                btn.onclick = () => checkAnswer(name, person.name, btn);
+                choices.appendChild(btn);
+            });
+        }
+
+
+        function checkAnswer(selected, correct, btn) {
+            const buttons = document.querySelectorAll(".choice-btn");
+            buttons.forEach(b => b.disabled = true);
+            if (selected === correct) {
+                btn.classList.add("correct");
+                stageScore++;
+            } else {
+                btn.classList.add("wrong");
+                buttons.forEach(b => {
+                    if (b.textContent === correct) b.classList.add("correct");
+                });
+            }
+            setTimeout(() => showQuiz(currentQuizIndex + 1), 1000);
+            currentQuizIndex++;
+        }
+
+        function showFinalScore() {
+            img.src = "";
+            nameLabel.textContent = "";
+            choices.innerHTML = "";
+            stageInfo.textContent = "";
+            score.textContent = "";
+            finalScore.textContent = `🎉 Тоглоом дууслаа! Нийт оноо: ${totalScore} / ${stages.reduce((a, b) => a + b, 0)}`;
+
+            if (totalScore >= 25) {
+                message.textContent = "👏 Гайхалтай ой санамжтай байна!";
+            } else if (totalScore >= 15) {
+                message.textContent = "👍 Сайн байна! Дахин туршаад үз!";
+            } else {
+                message.textContent = "💪 Урам хугарах хэрэггүй, дахин оролдоорой!";
+            }
+
+            startBtn.textContent = "🔁 Дахин эхлэх";
+            startBtn.style.display = "inline-block";
+        }
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+    </script>
+    <script src="common.js"></script>
+    <script src="userData.js"></script>
+</body>
+
+</html>

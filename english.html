@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="mn">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Word Wizard Challenge 🧙‍♂️</title>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="english.css">
+    <!-- jQuery & SweetAlert -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+</head>
+
+<body>
+    <!-- PROFILE BAR -->
+    <div class="profile-bar">
+        <div class="profile-pink">
+            <div class="profile-img">
+                <img src="images/pro.jpg" alt="">
+            </div>
+            <div class="text">
+                <div style="font-weight: bold;">User Name </div>
+                <div style="color: gray; font-size: 12px;">LV. MASTER KING</div>
+                <div id="process"></div>
+            </div>
+
+        </div>
+        <div class="point">
+            YOUR POINT IS ... / 10000
+        </div>
+    </div>
+    <a href="games.html" id="back"><button>БУЦАХ</button></a>
+
+    <!--BUTTONS AND COIN-->
+    <div class="header">
+
+        <div class="currency-container">
+            <div class="currency">
+                <img src="images/coin.png" alt="Gold Coin">
+                <span>4,892</span>
+            </div>
+            <div class="currency">
+                <img src="images/diamond.png" alt="Blue Crystal">
+                <span>8,219</span>
+            </div>
+        </div>
+
+        <div class="btns">
+            <a href="dashboard.html"><button>Профайл</button></a>
+            <a href="games.html"><button class="active">Тоглоом</button></a>
+            <a href="info.html"><button>Мэдээлэл</button></a>
+            <a href="about.html"><button>Бидний тухай</button></a>
+        </div>
+    </div>
+
+
+    <!--SPIN WHEEL-->
+    <div class="container">
+        <h4 align="center" class="thought">Алийг нь тоглохоо <br> мэдэхгүй байна уу?</h4>
+        <div class="row">
+            <div class="col-xs-12" align="center">
+                <div id="wheel">
+                    <canvas id="canvas" width="260" height="260"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-xs-12" align="center">
+                <button onclick="startSpin()" class="btn">Эргүүлэх</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPIN RESPONSE -->
+    <div id="resultModal">
+        <div class="modal-content">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body" id="modalBodyText">
+                <!-- Үр дүн энд гарна -->
+            </div>
+            <div class="modal-footer">
+                <button onclick="hideModal()" class="btn">Тоглох</button>
+                <button onclick="hideModal()" class="btn">Гарах</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="game-container">
+        <div class="avatar">
+            <div class="avatar-text">Англи үг цээжилцгээе</div>
+            <img src="images/wizard.png" alt="">
+        </div>
+
+        <div id="game-container">
+            <div class="heading">
+                <h1>Word Wizard Challenge 🧙‍♂️</h1>
+            </div>
+
+            <div class="content-area">
+                <!-- Start Screen -->
+                <div id="start-screen">
+                    <h2>Ready to learn?</h2>
+                    <p>You'll see 5 words to memorize, then test your knowledge!</p>
+                    <button class="primary" id="start-btn">Begin</button>
+                </div>
+
+                <!-- Flashcard Phase -->
+                <div id="flashcard-phase" class="hidden">
+                    <div class="timer" id="flashcard-timer">5</div>
+                    <div class="flashcard">
+                        <div class="word" id="current-word">Word</div>
+                        <div class="definition" id="current-def">Definition</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="flashcard-progress"></div>
+                    </div>
+                </div>
+
+                <!-- Quiz Phase -->
+                <div id="quiz-phase" class="hidden">
+                    <h2>What does <span id="quiz-word">word</span> mean?</h2>
+                    <div class="options" id="options"></div>
+                    <div class="feedback" id="feedback"></div>
+                </div>
+
+                <!-- Celebration Screen -->
+                <div id="celebration" class="hidden">
+                    <h2>Great job! 🎉</h2>
+                    <p>You earned <span class="xp" id="xp-earned">0</span> XP!</p>
+                    <button class="primary" id="play-again-btn">Try Again</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <script>
+        const wordBank = [
+            { word: "Ephemeral", definition: "Lasting for a very short time" },
+            { word: "Serendipity", definition: "The occurrence of events by chance in a happy way" },
+            { word: "Ubiquitous", definition: "Present, appearing, or found everywhere" },
+            { word: "Pernicious", definition: "Having a harmful effect" },
+            { word: "Eloquent", definition: "Fluent or persuasive in speaking or writing" },
+            { word: "Resilient", definition: "Able to withstand or recover quickly from difficult conditions" },
+            { word: "Voracious", definition: "Wanting or devouring great quantities of something" },
+            { word: "Fastidious", definition: "Very attentive to and concerned about accuracy and detail" },
+
+            { word: "Abate", definition: "To become less active, less intense, or less in amount" },
+            { word: "Benevolent", definition: "Well-meaning and kindly" },
+            { word: "Cacophony", definition: "A harsh, discordant mixture of sounds" },
+            { word: "Debunk", definition: "To expose the falseness of something" },
+            { word: "Furtive", definition: "Attempting to avoid notice or attention" },
+            { word: "Galvanize", definition: "To shock or excite someone into taking action" },
+            { word: "Heresy", definition: "A belief contrary to orthodox religious doctrine" },
+            { word: "Imminent", definition: "About to happen" },
+            { word: "Juxtapose", definition: "To place side by side for comparison" },
+            { word: "Keen", definition: "Having or showing eagerness or enthusiasm" },
+            { word: "Lucid", definition: "Expressed clearly; easy to understand" },
+            { word: "Mundane", definition: "Lacking interest or excitement; dull" },
+            { word: "Nostalgia", definition: "A sentimental longing for the past" },
+            { word: "Obsolete", definition: "No longer produced or used; out of date" },
+            { word: "Pragmatic", definition: "Dealing with things realistically and sensibly" },
+            { word: "Quell", definition: "To put an end to, typically by force" },
+            { word: "Rancor", definition: "Bitterness or resentfulness, especially long-standing" },
+            { word: "Scrutinize", definition: "To examine or inspect closely and thoroughly" },
+            { word: "Tenacious", definition: "Tending to keep a firm hold of something; persistent" },
+
+            { word: "Ubiquitous", definition: "Present or existing everywhere" },
+            { word: "Vacillate", definition: "To alternate or waver between different opinions" },
+            { word: "Wary", definition: "Feeling or showing caution about possible dangers" },
+            { word: "Xenophobia", definition: "Dislike or prejudice against people from other countries" },
+            { word: "Yield", definition: "To give in or surrender" },
+            { word: "Zealous", definition: "Having great energy or enthusiasm in pursuit of a cause" },
+            { word: "Alleviate", definition: "To make suffering or a problem less severe" },
+            { word: "Bolster", definition: "To support or strengthen" },
+            { word: "Convoluted", definition: "Extremely complex and difficult to follow" },
+            { word: "Deference", definition: "Humble submission and respect" },
+            { word: "Empirical", definition: "Based on observation or experience rather than theory" },
+            { word: "Feasible", definition: "Possible to do easily or conveniently" },
+            { word: "Gratuitous", definition: "Uncalled for; lacking good reason; unwarranted" },
+            { word: "Hinder", definition: "To create difficulties that result in delay or obstruction" },
+            { word: "Inevitable", definition: "Certain to happen; unavoidable" },
+            { word: "Lethargic", definition: "Sluggish and apathetic" },
+            { word: "Meticulous", definition: "Showing great attention to detail" },
+            { word: "Novel", definition: "New or unusual in an interesting way" },
+            { word: "Ostentatious", definition: "Characterized by vulgar or pretentious display" },
+            { word: "Paradox", definition: "A seemingly absurd statement that may be true" }
+        ];
+
+        let currentWords = [];
+        let currentIndex = 0;
+        let score = 0;
+        let timer;
+        const wordsToLearn = 5;
+        const flashcardTime = 5;
+
+        const startScreen = document.getElementById('start-screen');
+        const flashcardPhase = document.getElementById('flashcard-phase');
+        const quizPhase = document.getElementById('quiz-phase');
+        const celebration = document.getElementById('celebration');
+        const startBtn = document.getElementById('start-btn');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const currentWordEl = document.getElementById('current-word');
+        const currentDefEl = document.getElementById('current-def');
+        const flashcardTimer = document.getElementById('flashcard-timer');
+        const flashcardProgress = document.getElementById('flashcard-progress');
+        const quizWordEl = document.getElementById('quiz-word');
+        const optionsContainer = document.getElementById('options');
+        const feedbackEl = document.getElementById('feedback');
+        const xpEarnedEl = document.getElementById('xp-earned');
+
+        function initGame() {
+            currentIndex = 0;
+            score = 0;
+            currentWords = [...wordBank];
+            shuffleArray(currentWords);
+            currentWords = currentWords.slice(0, Math.min(wordsToLearn, currentWords.length));
+
+            startScreen.classList.remove('hidden');
+            flashcardPhase.classList.add('hidden');
+            quizPhase.classList.add('hidden');
+            celebration.classList.add('hidden');
+        }
+
+        function startLearning() {
+            currentIndex = 0;
+            startScreen.classList.add('hidden');
+            flashcardPhase.classList.remove('hidden');
+            showNextFlashcard();
+        }
+
+        function showNextFlashcard() {
+            if (currentIndex >= currentWords.length) {
+                startQuiz();
+                return;
+            }
+
+            const word = currentWords[currentIndex];
+            currentWordEl.textContent = word.word;
+            currentDefEl.textContent = word.definition;
+            flashcardProgress.style.width = `${(currentIndex / currentWords.length) * 100}%`;
+
+            let timeLeft = flashcardTime;
+            flashcardTimer.textContent = timeLeft;
+
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                flashcardTimer.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    currentIndex++;
+                    showNextFlashcard();
+                }
+            }, 1000);
+        }
+
+        function startQuiz() {
+            clearInterval(timer);
+            currentIndex = 0;
+            flashcardPhase.classList.add('hidden');
+            quizPhase.classList.remove('hidden');
+            showNextQuestion();
+        }
+
+        function showNextQuestion() {
+            if (currentIndex >= currentWords.length) {
+                endGame();
+                return;
+            }
+
+            const word = currentWords[currentIndex];
+            quizWordEl.textContent = word.word;
+            feedbackEl.textContent = '';
+            feedbackEl.className = 'feedback';
+
+            const options = [word.definition];
+            while (options.length < 4) {
+                const random = wordBank[Math.floor(Math.random() * wordBank.length)];
+                if (!options.includes(random.definition)) {
+                    options.push(random.definition);
+                }
+            }
+
+            shuffleArray(options);
+
+            optionsContainer.innerHTML = '';
+            options.forEach(def => {
+                const btn = document.createElement('button');
+                btn.textContent = def;
+                btn.dataset.correct = def === word.definition ? "true" : "false";
+                btn.onclick = () => checkAnswer(btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(button) {
+            const isCorrect = button.dataset.correct === "true";
+
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (btn.dataset.correct === "true") {
+                    btn.classList.add('correct');
+                } else if (btn === button && !isCorrect) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            if (isCorrect) {
+                score += 20;
+                feedbackEl.textContent = "Correct! +20 XP";
+                feedbackEl.classList.add('positive');
+            } else {
+                feedbackEl.textContent = "Incorrect!";
+                feedbackEl.classList.add('negative');
+            }
+
+            currentIndex++;
+            setTimeout(showNextQuestion, 1500);
+        }
+
+        function endGame() {
+            quizPhase.classList.add('hidden');
+            celebration.classList.remove('hidden');
+            xpEarnedEl.textContent = score;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        startBtn.addEventListener('click', startLearning);
+        playAgainBtn.addEventListener('click', initGame);
+
+        initGame();
+    </script>
+    <script src="common.js"></script>
+    <script src="userData.js"></script>
+</body>
+
+</html>

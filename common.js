@@ -14,14 +14,14 @@ const color_data = [
   "#f67",
 ];
 const label_data = [
-  "Divyesh",
-  "Roshni",
-  "Rency",
-  "Reem",
-  "Ditya",
-  "Feny",
-  "Greny",
-  "Ronil",
+  "Анхаар & Төвлөр",
+  "Сонс & Тогтоо",
+  "Мемо Карт",
+  "Жимс, Бөмбөг, Мөс",
+  "Word Wizard",
+  "Би Хэн бэ",
+  "Үг цээжил",
+  "Анхаар & Төвлөр",
 ];
 const slices = color_data.length;
 const sliceDeg = 360 / slices;

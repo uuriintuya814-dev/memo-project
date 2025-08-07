@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <title>Memo Dashboard</title>
     <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="about.css">
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
@@ -48,6 +51,119 @@
             <a href="about.html"><button class="active">Бидний тухай</button></a>
         </div>
     </div>
+
+    <div class="members-container">
+        <div class="member-card bg1">
+            <div class="mem-name">Үүрийнтуяа</div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+        <div class="member-card bg2">
+            <div class="mem-name">Хүслэн</div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+        <div class="member-card bg3">
+            <div class="mem-name">Пүрэвжаргал</div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+        <div class="member-card bg4">
+            <div class="mem-name">Бямбаням</div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+        <div class="member-card bg5">
+            <div class="mem-name">Номин-Эрдэнэ</div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="scroller" data-direction="right" data-speed="fast">
+        <div class="scroller__inner">
+            <img src="images/girlscode.png" alt="" />
+            <img src="images/img-12.jpg" alt="" />
+            <img src="images/img-13.jpg" alt="" />
+            <img src="images/img-1.jpg" alt="" />
+            <img src="https://i.pravatar.cc/150?img=5" alt="" />
+            <img src="https://i.pravatar.cc/150?img=6" alt="" />
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>const scrollers = document.querySelectorAll(".scroller");
+
+        // If a user hasn't opted in for recuded motion, then we add the animation
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            addAnimation();
+        }
+
+        function addAnimation() {
+            scrollers.forEach((scroller) => {
+                // add data-animated="true" to every `.scroller` on the page
+                scroller.setAttribute("data-animated", true);
+
+                // Make an array from the elements within `.scroller-inner`
+                const scrollerInner = scroller.querySelector(".scroller__inner");
+                const scrollerContent = Array.from(scrollerInner.children);
+
+                // For each item in the array, clone it
+                // add aria-hidden to it
+                // add it into the `.scroller-inner`
+                scrollerContent.forEach((item) => {
+                    const duplicatedItem = item.cloneNode(true);
+                    duplicatedItem.setAttribute("aria-hidden", true);
+                    scrollerInner.appendChild(duplicatedItem);
+                });
+            });
+        }
+    </script>
     <script src="userData.js"></script>
 </body>
 

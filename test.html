@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="mn">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Memo Dashboard</title>
+    <style>
+      html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  width: 100%;
+  background-color: rgb(255, 226, 234);
+  background-image: radial-gradient(#7224583b 1px, transparent 1px);
+  background-size: 24px 24px, cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: sans-serif;
+  height: 100vh;
+  position: relative;
+}
+
+.header {
+  width: 90%;
+  position: relative;
+  margin: 2rem 0 2rem 0;
+  display: flex;
+}
+
+.currency-container {
+  position: absolute;
+  left: 20%;
+  display: flex;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 40px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  height: 40px;
+}
+
+.currency {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(145deg, #ffb3d1, #ff99bf);
+  padding: 10px 16px;
+  border-radius: 30px;
+  box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.142),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.1), 5px 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+  margin: 5px;
+}
+
+.currency:hover {
+  transform: translateY(-3px);
+}
+
+.currency img {
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+.currency span {
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  margin-right: 3px;
+}
+
+/* BUTTONS */
+
+.btns {
+  position: absolute;
+  right: 0%;
+  display: flex;
+  gap: 10px;
+}
+
+.logo {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fc55ab;
+}
+
+/* Ердийн товч */
+.btns button {
+  padding: 12px 40px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  background-color: transparent;
+  color: #fc55ab;
+  border: 1px solid #fc55ab;
+  box-shadow: 0 0 10px rgba(255, 182, 193, 0.3);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.4s ease;
+  height: 40px;
+}
+
+/* Hover үед */
+.btns button:hover::before,
+.btns button.active::before {
+  opacity: 1;
+}
+
+.btns button:hover,
+.btns button.active {
+  box-shadow: 0 0 20px rgba(242, 130, 205, 0.6);
+  color: white;
+  transform: scale(1.05);
+  border: none;
+}
+
+/* Градиент арын давхарга */
+.btns button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, #fc55ab, #c267fe);
+  z-index: -1;
+  transition: opacity 0.4s ease;
+  opacity: 0;
+  border-radius: 20px;
+}
+
+/*PROFILE BAR*/
+
+.profile-bar {
+  position: absolute;
+  margin-top: 2rem;
+  left: 2.5rem;
+  width: 280px;
+  background: #fc55ab;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  font-family: "Segoe UI", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 111;
+  height: 120px;
+}
+
+.profile-pink {
+  position: relative;
+  width: 277px;
+  background: white;
+  border-radius: 19px 19px 15px 15px;
+  z-index: 999;
+  height: 80px;
+  margin-top: 1.5px;
+}
+
+.profile-img img {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  object-fit: cover;
+  position: absolute;
+  left: 8px;
+  top: 8px;
+}
+
+.text {
+  position: absolute;
+  left: 76px;
+  top: 8px;
+}
+
+#process {
+  margin-top: 5px;
+  width: 80%;
+  height: 16px;
+  background-color: rgb(9, 202, 9);
+  border-radius: 0 0 10px 0;
+}
+
+.point {
+  margin: auto;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.game-container {
+  position: absolute;
+  left: calc(20% + 2.8rem);
+  right: 5%; 
+  height: calc(100% - 6rem - 40px);
+  display: flex;
+  align-items: center;
+  max-width: none;
+  box-sizing: border-box;
+  margin-top: calc(4rem + 40px);
+  gap: 15px; 
+}
+
+.main-game {
+  width: 70%; 
+  box-sizing: border-box;
+  padding: 20px;
+  background-color: #f5f0f5;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  order: none;
+  position: relative;
+          background-clip: padding-box;
+        }
+
+        .main-game::before {
+          content: "";
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          right: -2px;
+          bottom: -2px;
+          background: linear-gradient(135deg, #fc55ab, #c267fe, #ffb3d1, #ff99bf);
+          border-radius: 22px; /* Slightly larger than container */
+          z-index: -1;
+          animation: borderGlow 4s ease infinite alternate;
+        }
+
+        .stats-container {
+          width: 30%; /* Өмнөх 20%-иас 30% болгосон */
+          box-sizing: border-box;
+          font-size: 20px;
+          padding: 20px;
+          background-color: white;
+          border-radius: 20px;
+          border-color: 4px dashed linear-gradient(135deg, #fc55ab, #c267fe, #ffb3d1, #ff99bf);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          height: 100%;
+          border: none;
+
+          position: relative;
+          background-clip: padding-box
+        }
+
+        .stats-container::before {
+          content: "";
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          right: -2px;
+          bottom: -2px;
+          background: linear-gradient(135deg, #fc55ab, #c267fe, #ffb3d1, #ff99bf);
+          border-radius: 22px; /* Slightly larger than container */
+          z-index: -1;
+          animation: borderGlow 4s ease infinite alternate;
+        }
+
+        @keyframes borderGlow {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .language-toggle {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: #f8f9fa;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 1px solid #e0e6ed;
+            z-index: 10;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            color: #6c757d;
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(to right, #8e44ad, #3498db);
+            color: white;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-align: center;
+            background: linear-gradient(90deg, #8e44ad, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .level-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .level-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            min-width: 140px;
+            font-size: 1.1rem;
+            background: #f1f1f1;
+        }
+
+        .level-btn.active {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-easy.active { background: linear-gradient(to bottom, #2ecc71, #27ae60);  }
+        .btn-medium.active { background: linear-gradient(to bottom, #f1c40f, #f39c12); }
+        .btn-hard.active { background: linear-gradient(to bottom, #f51c0300, #c0392b);  }
+
+        .game-info {
+          position: relative;
+          left: 350px;
+          bottom: 200px;
+          top: 50px;
+          display: wrap;
+          justify-content: center;
+          gap: 20px;
+          margin-bottom: 25px;
+          flex-wrap: wrap;
+        }
+
+        .info-box {
+          position: relative;
+          top: 100px;
+          right: 50px;
+          background: white;
+          padding: 5px;
+          border-radius: 15px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+          text-align: center;
+          border: 4px solid #e0e6ed;
+          transition: transform 0.3s;
+        }
+
+        .info-box:hover {
+          transform: translateY(-5px);
+        }
+
+        .info-title {
+          font-size: 1rem;
+          color: #6c757d;
+          margin-bottom: 8px;
+          font-weight: 600;
+        }
+
+        .info-value {
+          font-weight: 700;
+          font-size: 1.8rem;
+          color: #2c3e50;
+        }
+
+        .instruction {
+          font-size: 1.2rem;
+          margin: 20px 0 30px;
+          color: #2c3e50;
+          line-height: 1.6;
+          padding: 15px;
+          background: #f8f9fa;
+          border-radius: 12px;
+          box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+          border: 1px solid #e0e6ed;
+          text-align: center;
+        }
+
+        .instruction strong {
+          color: #e74c3c;
+          font-size: 1.3em;
+        }
+
+        #colorWord {
+            font-size: 2rem;
+            font-weight: 300px;
+            margin: 5px 30px;
+            padding: 10px;
+            border-radius: 20px;
+            background: linear-gradient(to bottom, #f8f9fa, #eef2f7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1), inset 0 0 15px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            min-height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e0e6ed;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 3fr);
+            gap: 20px;
+            margin: 10px 0 20px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .color-btn {
+            padding: 10px 30px;
+            font-size: 1.5rem;
+            font-weight: 400;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .color-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 10%;
+            height: 10%;
+            background: rgba(255,255,255,0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .color-btn:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .color-btn:hover::before {
+            opacity: 1;
+        }
+
+        .color-btn:active {
+            transform: translateY(2px);
+        }
+
+        #red-btn { background: linear-gradient(to bottom, #ef0707, #f30606); }
+        #green-btn { background: linear-gradient(to bottom, #06f70e, #03ef27); }
+        #blue-btn { background: linear-gradient(to bottom, #070bfc, #0938f2); }
+        #yellow-btn { background: linear-gradient(to bottom, #f9d423, #d5f215); color: #333; text-shadow: none; }
+
+        #result {
+            font-weight: bold;
+            margin: 5px 0;
+            font-size: 1rem;
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s ease;
+            padding: 12px 20px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .correct {
+            color: #27ae60;
+            background: rgba(39, 174, 96, 0.1);
+            border: 2px solid #27ae60;
+        }
+
+        .incorrect {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid #e74c3c;
+        }
+
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(to bottom, #9b59b6, #8e44ad);
+            color: rgb(245, 245, 245);
+            border: none;
+            padding: 16px 35px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            min-width: 220px;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+        }
+
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+        }
+
+        .btn-restart {
+            background: linear-gradient(to bottom, #2ecc71, #27ae60);
+        }
+
+        /* Stats section styling */
+        .stats-title {
+          
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            text-align: center;
+            background: linear-gradient(135deg, #d8378a, #8d45bd);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .stat-item {
+
+          padding: 1px;
+            width: 100%;
+            padding: 15px 20px;
+            margin: 12px 0;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(252, 85, 171, 0.1);
+            font-style: italic;
+            color: rgb(45, 0, 45);
+            font-size: 18px;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(252, 85, 171, 0.15),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .stat-item span {
+            font-weight: bold;
+            background: linear-gradient(135deg, #d8378a, #8d45bd);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            padding: 2px 8px;
+            border-radius: 6px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .motivation-section {
+            width: 100%;
+            height: 31.5%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 25px;
+            padding: 20px;
+            background: #fff0f5;
+            border-radius: 16px;
+            box-shadow: 0 0 15px rgba(252, 85, 171, 0.15),
+                inset 0 0 8px rgba(255, 255, 255, 0.6);
+            border: 2px dashed #ffc0cb;
+        }
+
+        #motivation-text {
+            font-style: italic;
+            font-size: 1.4rem;
+            text-align: center;
+            color: rgb(45, 0, 45);
+            margin-bottom: 20px;
+            position: relative;
+            padding: 15px;
+        }
+
+        #motivation-text::before {
+            content: "🗨️";
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 24px;
+            background: #fff0f5;
+            border-radius: 50%;
+            padding: 4px;
+        }
+
+        #motivation-avatar {
+            width: 100%;
+            max-width: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #motivation-avatar img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive design */
+        @media screen and (max-width: 1200px) {
+            .game-container {
+                flex-direction: column;
+            }
+            
+            .main-game {
+                min-width: 100%;
+            }
+            
+            .stats-container {
+                width: 100%;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .currency-container {
+                position: static;
+                transform: none;
+                margin: 10px 0;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .color-btn {
+                padding: 20px;
+            }
+            
+            #colorWord {
+                font-size: 3rem;
+                padding: 20px;
+                min-height: 150px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .level-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .level-btn {
+                width: 100%;
+            }
+            
+            .game-info {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .info-box {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+
+        
+#back {
+  position: absolute;
+  left: 2.5rem;
+  bottom: 2rem;
+  width: 280px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 40px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+#back button {
+  width: 270px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #ffb3d1, #ff99bf);
+  border-radius: 30px;
+  box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.142),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.1), 5px 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+  height: 50px;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: none;
+}
+  
+    </style>
+
+</head>
+
+    <!-- PROFILE BAR -->
+    <div class="profile-bar">
+        <div class="profile-pink">
+            <div class="profile-img">
+                <img src="images/pro.jpg" alt="">
+            </div>
+
+            <div class="text">
+                <div style="font-weight: bold;">User Name </div>
+                <div style="color: gray; font-size: 12px;">LV. MASTER KING</div>
+                <div id="process"></div>
+            </div>
+        </div>
+
+        <div class="point">
+            YOUR POINT IS ... / 10000
+        </div>
+    </div>
+
+    <a href="games.html" id="back"><button>БУЦАХ</button></a>
+
+
+
+    <div class="header">
+
+        <div class="currency-container">
+            <div class="currency">
+                <img src="images/coin.png" alt="Gold Coin">
+                <span>4,892</span>
+            </div>
+            <div class="currency">
+                <img src="images/diamond.png" alt="Blue Crystal">
+                <span>8,219</span>
+            </div>
+        </div>
+
+        <div class="btns">
+            <a href="dashboard.html"><button>Профайл</button></a>
+            <a href="games.html"><button>Тоглоом</button></a>
+            <a href="info.html"><button class="active">Мэдээлэл</button></a>
+            <a href="about.html"><button>Бидний тухай</button></a>
+        </div>
+    </div>
+    <div class="game-container">
+        <div class="main-game">
+            <div class="language-toggle">
+                <button id="lang-mn" class="lang-btn active">MN</button>
+                <button id="lang-en" class="lang-btn">EN</button>
+            </div>
+            
+            <h1 id="game-title">🎨 Өнгөний Тоглоом⚡</h1>
+            
+            <div class="level-container">
+                <button id="easyBtn" class="level-btn btn-easy active">АМАРХАН</button>
+                <button id="mediumBtn" class="level-btn btn-medium">ДУНД</button>
+                <button id="hardBtn" class="level-btn btn-hard">ХЭЦҮҮ</button>
+            </div>
+            
+         
+            
+            <p class="instruction" id="instruction">Та <strong>ӨНГӨ</strong> дээр төвлөрч зөв хариултыг сонгоно уу!</p>
+            
+            <div id="colorWord">Бэлэн боллоо</div>
+            
+            <div class="buttons">
+                <button id="red-btn" class="color-btn">Улаан</button>
+                <button id="green-btn" class="color-btn">Ногоон</button>
+                <button id="blue-btn" class="color-btn">Цэнхэр</button>
+                <button id="yellow-btn" class="color-btn">Шар</button>
+            </div>
+            
+            <div id="result">Тоглоом эхлэхэд бэлэн!</div>
+            
+            <div class="controls">
+                <button id="startBtn" class="btn">ТОГЛООМ ЭХЛҮҮЛЭХ</button>
+                <button id="restartBtn" class="btn btn-restart">ДАХИН ЭХЛҮҮЛЭХ</button>
+            </div>
+        </div>
+
+
+        
+        <div class="stats-container">
+            <h2 class="stats-title">⚡Онооны самбар⚡</h2>
+            <div class="stat-item">Сүүлийн үр дүн: <span id="last-time">–</span></div>
+            <div class="stat-item">Дундаж хариу: <span id="avg-time">–</span></div>
+            <div class="stat-item">Шилдэг амжилт: <span id="best-time">–</span></div>
+            
+            <div class="motivation-section">
+                <div id="motivation-text">Таны хийж буй дасгал тархины үйл ажиллагааг сайжруулж, ой санамжийг хурдасгана. Цаашид үргэлжлүүлэн хичээгээрэй!</div>
+                
+            </div>
+        </div>
+    </div>
+
+
+    
+
+           <div class="game-info">
+                <div class="info-box">
+                    <div class="info-title" id="player-title">Тоглогч</div>
+                    <div id="score" class="info-value">0</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-title" id="timer-title">Хугацаа</div>
+                    <div id="timer" class="info-value">60</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-title" id="level-title">Түвшин</div>
+                    <div id="level" class="info-value">Амархан</div>
+                </div>
+            </div>
+        
+
+    <script>
+        const colors = ['red', 'green', 'blue', 'yellow'];
+        const colorMap = {
+            red: { mn: 'Улаан', en: 'Red' },
+            green: { mn: 'Ногоон', en: 'Green' },
+            blue: { mn: 'Цэнхэр', en: 'Blue' },
+            yellow: { mn: 'Шар', en: 'Yellow' }
+        };
+        
+        // Хэлний орчуулга
+        const translations = {
+            mn: {
+                title: "🎨 Өнгөний Тоглоом",
+                instruction: "Та <strong>ӨНГӨ</strong> дээр төвлөрч зөв хариултыг сонгоно уу!",
+                ready: "Бэлэн боллоо",
+                start: "ТОГЛООМ ЭХЛҮҮЛЭХ",
+                restart: "ДАХИН ЭХЛҮҮЛЭХ",
+                correct: "✅ Зөв байна!",
+                incorrect: "❌ Буруу! Зөв хариулт: ",
+                gameStart: "Тоглоом эхэллээ!",
+                player: "Тоглогч",
+                time: "Хугацаа",
+                level: "Түвшин",
+                easy: "Амархан",
+                medium: "Дунд",
+                hard: "Хэцүү",
+                scoreTitle: "Онооны самбар",
+                gameOver: "ТОГЛООМ ДУУСЛАА!",
+                finalScore: "Таны эцсийн дүн:",
+                nextGame: "Дараагийн тоглоомонд амжилт хүсье!",
+                playAgain: "ДАХИН ТОГЛОХ"
+            },
+            en: {
+                title: "🎨 Color Game",
+                instruction: "Focus on the <strong>COLOR</strong> and choose the correct answer!",
+                ready: "Get Ready",
+                start: "START GAME",
+                restart: "RESTART GAME",
+                correct: "✅ Correct!",
+                incorrect: "❌ Wrong! Correct answer: ",
+                gameStart: "Game started!",
+                player: "Player",
+                time: "Time",
+                level: "Level",
+                easy: "Easy",
+                medium: "Medium",
+                hard: "Hard",
+                scoreTitle: "Score Board",
+                gameOver: "GAME OVER!",
+                finalScore: "Your final score:",
+                nextGame: "Good luck in the next game!",
+                playAgain: "PLAY AGAIN"
+            }
+        };
+        
+        let score = 0;
+        let timeLeft = 60;
+        let timer;
+        let gameActive = false;
+        let currentLanguage = 'mn';
+        let difficulty = 'easy';
+        
+        // DOM элементүүд
+        const scoreElement = document.getElementById('score');
+        const timerElement = document.getElementById('timer');
+        const colorWordElement = document.getElementById('colorWord');
+        const resultElement = document.getElementById('result');
+        const startBtn = document.getElementById('startBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const levelElement = document.getElementById('level');
+        
+        // Хэл солих
+        document.getElementById('lang-mn').addEventListener('click', () => setLanguage('mn'));
+        document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+        
+        // Түвшин солих
+        document.getElementById('easyBtn').addEventListener('click', () => setDifficulty('easy'));
+        document.getElementById('mediumBtn').addEventListener('click', () => setDifficulty('medium'));
+        document.getElementById('hardBtn').addEventListener('click', () => setDifficulty('hard'));
+        
+        // Товчлууруудад эвент нэмэх
+        document.getElementById('red-btn').addEventListener('click', () => checkColor('red'));
+        document.getElementById('green-btn').addEventListener('click', () => checkColor('green'));
+        document.getElementById('blue-btn').addEventListener('click', () => checkColor('blue'));
+        document.getElementById('yellow-btn').addEventListener('click', () => checkColor('yellow'));
+        
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            document.getElementById('lang-mn').classList.toggle('active', lang === 'mn');
+            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+            
+            // Хэлээр текст солих
+            document.getElementById('game-title').textContent = translations[lang].title;
+            document.getElementById('instruction').innerHTML = translations[lang].instruction;
+            document.getElementById('player-title').textContent = translations[lang].player;
+            document.getElementById('timer-title').textContent = translations[lang].time;
+            document.getElementById('level-title').textContent = translations[lang].level;
+            document.getElementById('startBtn').textContent = translations[lang].start;
+            document.getElementById('restartBtn').textContent = translations[lang].restart;
+            
+            // Түвшний нэр
+            levelElement.textContent = translations[lang][difficulty];
+            
+            // Өнгөний товчнууд
+            document.getElementById('red-btn').textContent = colorMap.red[lang];
+            document.getElementById('green-btn').textContent = colorMap.green[lang];
+            document.getElementById('blue-btn').textContent = colorMap.blue[lang];
+            document.getElementById('yellow-btn').textContent = colorMap.yellow[lang];
+            
+            // Хэрэв тоглоом идэвхтэй биш бол анхны мессеж
+            if (!gameActive) {
+                colorWordElement.textContent = translations[lang].ready;
+                resultElement.textContent = translations[lang].ready;
+            }
+            
+            // Онооны самбарыг шинэчлэх
+            updateStats();
+        }
+        
+        function setDifficulty(level) {
+            difficulty = level;
+            levelElement.textContent = translations[currentLanguage][level];
+            
+            // Түвшинд хамаарах тохируулга
+            switch (level) {
+                case 'easy':
+                    timeLeft = 60;
+                    break;
+                case 'medium':
+                    timeLeft = 45;
+                    break;
+                case 'hard':
+                    timeLeft = 30;
+                    break;
+            }
+            
+            timerElement.textContent = timeLeft;
+            
+            // Түвшний товчлууруудыг идэвхжүүлэх
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`${level}Btn`).classList.add('active');
+        }
+        
+        function updateStats() {
+            document.getElementById('last-time').textContent = Math.floor(Math.random() * 100) + 'ms';
+            document.getElementById('avg-time').textContent = Math.floor(Math.random() * 200 + 100) + 'ms';
+            document.getElementById('best-time').textContent = Math.floor(Math.random() * 80 + 40) + 'ms';
+        }
+        
+        function getRandomColor() {
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+        
+        function setNewColorWord() {
+            const textColor = getRandomColor();
+            const displayColor = getRandomColor();
+            
+            colorWordElement.textContent = colorMap[textColor][currentLanguage];
+            colorWordElement.style.color = displayColor;
+            
+            colorWordElement.dataset.correctColor = displayColor;
+        }
+        
+        function checkColor(clickedColor) {
+            if (!gameActive) return;
+            
+            const correctColor = colorWordElement.dataset.correctColor;
+            
+            if (clickedColor === correctColor) {
+                resultElement.textContent = translations[currentLanguage].correct;
+                resultElement.className = "correct";
+                
+                // Оноо нэмэгдүүлэх
+                score++;
+                scoreElement.textContent = score;
+            } else {
+                resultElement.textContent = translations[currentLanguage].incorrect + colorMap[correctColor][currentLanguage];
+                resultElement.className = "incorrect";
+                
+                // Оноо хасах
+                score = Math.max(0, score - 1);
+                scoreElement.textContent = score;
+            }
+            
+            // Онооны самбар шинэчлэх
+            updateStats();
+            
+            setTimeout(() => {
+                resultElement.textContent = "";
+                resultElement.className = "";
+                setNewColorWord();
+            }, 1000);
+        }
+        
+        function startGame() {
+            if (gameActive) return;
+            
+            score = 0;
+            timeLeft = difficulty === 'easy' ? 60 : difficulty === 'medium' ? 45 : 30;
+            gameActive = true;
+            
+            scoreElement.textContent = score;
+            timerElement.textContent = timeLeft;
+            resultElement.textContent = translations[currentLanguage].gameStart;
+            resultElement.className = "";
+            
+            startBtn.disabled = true;
+            startBtn.textContent = translations[currentLanguage].gameStart;
+            
+            updateStats();
+            setNewColorWord();
+            
+            // Товчнуудыг идэвхжүүлэх
+            const buttons = document.querySelectorAll('.color-btn');
+            buttons.forEach(btn => {
+                btn.disabled = false;
+            });
+            
+            // Таймер эхлүүлэх
+            timer = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                
+                if (timeLeft <= 10) {
+                    timerElement.style.color = "#e74c3c";
+                    timerElement.style.fontWeight = "bold";
+                }
+                
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+        
+        function endGame() {
+            clearInterval(timer);
+            gameActive = false;
+            
+            // Тоглоомын төгсгөлийн дэлгэц
+            const buttons = document.querySelectorAll('.color-btn');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            resultElement.textContent = `${translations[currentLanguage].gameOver} ${translations[currentLanguage].finalScore} ${score}`;
+            resultElement.className = "incorrect";
+            
+            startBtn.textContent = translations[currentLanguage].playAgain;
+            startBtn.disabled = false;
+            startBtn.onclick = restartGame;
+        }
+        
+        function restartGame() {
+            window.location.reload();
+        }
+        
+        // Анхны тохиргоо
+        window.onload = function() {
+            // Товчлууруудыг идэвхгүй болгох
+            const buttons = document.querySelectorAll('.color-btn');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            // Эхний хэл сонгох
+            setLanguage('mn');
+            
+            // Түвшний товчлуурыг идэвхжүүлэх
+            document.getElementById('easyBtn').classList.add('active');
+            
+            // Дахин эхлүүлэх товч нэмэх
+            restartBtn.addEventListener('click', restartGame);
+            
+            // Тоглоом эхлүүлэх товч
+            startBtn.addEventListener('click', startGame);
+            
+            // Статистик мэдээлэл
+            updateStats();
+        };
+        </script>
+        <script src="userData.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="mn">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Memo Dashboard</title>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="fruit.css">
+    <!-- jQuery & SweetAlert -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+</head>
+
+<body>
+    <!-- PROFILE BAR -->
+    <div class="profile-bar">
+        <div class="profile-pink">
+            <div class="profile-img">
+                <img src="images/pro.jpg" alt="">
+            </div>
+            <div class="text">
+                <div style="font-weight: bold;">User Name </div>
+                <div style="color: gray; font-size: 12px;">LV. MASTER KING</div>
+                <div id="process"></div>
+            </div>
+
+        </div>
+        <div class="point">
+            YOUR POINT IS ... / 10000
+        </div>
+    </div>
+    <a href="games.html" id="back"><button>БУЦАХ</button></a>
+
+    <!--BUTTONS AND COIN-->
+    <div class="header">
+
+        <div class="currency-container">
+            <div class="currency">
+                <img src="images/coin.png" alt="Gold Coin">
+                <span>4,892</span>
+            </div>
+            <div class="currency">
+                <img src="images/diamond.png" alt="Blue Crystal">
+                <span>8,219</span>
+            </div>
+        </div>
+
+        <div class="btns">
+            <a href="dashboard.html"><button>Профайл</button></a>
+            <a href="games.html"><button class="active">Тоглоом</button></a>
+            <a href="info.html"><button>Мэдээлэл</button></a>
+            <a href="about.html"><button>Бидний тухай</button></a>
+        </div>
+    </div>
+
+
+    <!--SPIN WHEEL-->
+    <div class="container">
+        <h4 align="center" class="thought">Алийг нь тоглохоо <br> мэдэхгүй байна уу?</h4>
+        <div class="row">
+            <div class="col-xs-12" align="center">
+                <div id="wheel">
+                    <canvas id="canvas" width="260" height="260"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-xs-12" align="center">
+                <button onclick="startSpin()" class="btn">Эргүүлэх</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPIN RESPONSE -->
+    <div id="resultModal">
+        <div class="modal-content">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body" id="modalBodyText">
+                <!-- Үр дүн энд гарна -->
+            </div>
+            <div class="modal-footer">
+                <button onclick="hideModal()" class="btn">Тоглох</button>
+                <button onclick="hideModal()" class="btn">Гарах</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="game-container">
+        <div class="game">
+            <div class="game-stats">
+                <div class="stat-box" id="score">Оноо: 0</div>
+                <div class="stat-box" id="timer">Цаг: 30</div>
+                <div class="stat-box" id="high-score">Дээд оноо: 0</div>
+            </div>
+
+            <div id="game-area-wrapper">
+                <div id="game-area"></div>
+                <div class="game-bg-elements">
+                    <div class="bg-fruit">🍎</div>
+                    <div class="bg-fruit">🍌</div>
+                    <div class="bg-fruit">🍇</div>
+                    <div class="bg-fruit">🍓</div>
+                </div>
+            </div>
+
+            <button id="start-btn" style="display: block;">Тоглоом эхлүүлэх</button>
+            <button id="restart-btn" style="display: none;">Дахин эхлүүлэх</button>
+        </div>
+
+        <div class="avatar">
+            <div class="title">Жимс, Бөмбөг, Мөс</div>
+            <div class="message" id="motivation-text">Тоглоом эхлэхэд бэлэн!</div>
+            <img src="images/avatar (2).png" alt="">
+        </div>
+    </div>
+
+    <!-- AUDIO ELEMENTS -->
+    <audio id="pop-sound" src="https://cdn.pixabay.com/download/audio/2022/03/26/audio_f6c2e25f1c.mp3"
+        preload="auto"></audio>
+    <audio id="bomb-sound" src="https://cdn.pixabay.com/download/audio/2023/03/21/audio_7c0663b6d4.mp3"
+        preload="auto"></audio>
+    <audio id="ice-sound" src="https://cdn.pixabay.com/download/audio/2022/03/28/audio_903b3df7c5.mp3"
+        preload="auto"></audio>
+    <audio id="combo-sound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_0d8d2aeb4b.mp3"
+        preload="auto"></audio>
+
+    <script>
+        // Game Variables
+        const gameArea = document.getElementById('game-area');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const highScoreDisplay = document.getElementById('high-score');
+        const motivationText = document.getElementById('motivation-text');
+
+        // Game assets
+        const fruitEmojis = ['🍎', '🍌', '🍇', '🍓', '🍉', '🍒', '🥝', '🍍', '🍑', '🍈'];
+        const bombEmoji = '💣';
+        const iceEmoji = '🧊';
+        const specialFruits = ['🌟', '✨', '⭐'];
+
+        // Motivational messages
+        const motivationMessages = [
+            "Чи чадна! 🔥",
+            "Өнөөдөр бол шинэ эхлэл!",
+            "Битгий бууж өг! 💪",
+            "Чиний хүч чадал гайхамшигтай!",
+            "Алдаанаасаа суралц!",
+            "Гялалзаад бай! 🌟",
+            "Чи гайхалтай юм!",
+            "Ялалт ойрхон байна шүү!"
+        ];
+
+        // Game state
+        let score = 0;
+        let highScore = localStorage.getItem('fruitGameHighScore') || 0;
+        let timeLeft = 30;
+        let timerId;
+        let bombMoveInterval;
+        let gameActive = false;
+        let comboCount = 0;
+        let lastClickTime = 0;
+        let boxes = [];
+        let bombBox = null;
+        let iceBoxes = [];
+        let specialBox = null;
+
+        // Initialize game
+        function initGame() {
+            highScoreDisplay.textContent = `Дээд оноо: ${highScore}`;
+            createBackgroundElements();
+            updateMotivationMessage();
+
+            // Hide restart button, show start button initially
+            restartBtn.style.display = 'none';
+            startBtn.style.display = 'block';
+        }
+
+        // Create background floating fruits
+        function createBackgroundElements() {
+            const bgContainer = document.querySelector('.game-bg-elements');
+            bgContainer.innerHTML = '';
+
+            for (let i = 0; i < 8; i++) {
+                const fruit = document.createElement('div');
+                fruit.className = 'bg-fruit';
+                fruit.textContent = fruitEmojis[Math.floor(Math.random() * fruitEmojis.length)];
+                fruit.style.left = `${Math.random() * 80}%`;
+                fruit.style.top = `${Math.random() * 80}%`;
+                fruit.style.animationDuration = `${15 + Math.random() * 10}s`;
+                fruit.style.animationDelay = `${Math.random() * 10}s`;
+                fruit.style.fontSize = `${2 + Math.random() * 3}rem`;
+                bgContainer.appendChild(fruit);
+            }
+        }
+
+        // Update motivation message
+        function updateMotivationMessage() {
+            const randomIndex = Math.floor(Math.random() * motivationMessages.length);
+            motivationText.textContent = motivationMessages[randomIndex];
+        }
+
+        // Sound effects
+        function playSound(id, volume = 1.0) {
+            try {
+                const sound = document.getElementById(id);
+                sound.volume = volume;
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log("Audio error:", e));
+            } catch (e) {
+                console.log("Sound error:", e);
+            }
+        }
+
+        // Position calculation
+        function getNonOverlappingPosition() {
+            const w = gameArea.clientWidth, h = gameArea.clientHeight;
+            const boxSize = Math.min(60, gameArea.clientWidth / 8);
+
+            for (let i = 0; i < 100; i++) {
+                const x = Math.floor(Math.random() * (w - boxSize));
+                const y = Math.floor(Math.random() * (h - boxSize));
+                if (!isOverlapping(x, y, boxSize)) return { x, y };
+            }
+            return { x: 0, y: 0 };
+        }
+
+        function isOverlapping(x, y, size) {
+            const allBoxes = [...boxes, ...iceBoxes];
+            if (bombBox) allBoxes.push(bombBox);
+            if (specialBox) allBoxes.push(specialBox);
+
+            const padding = size * 0.2;
+
+            for (const box of allBoxes) {
+                const boxSize = box.offsetWidth;
+                const dx = Math.abs(box.offsetLeft - x);
+                const dy = Math.abs(box.offsetTop - y);
+                if (dx < (boxSize + padding) && dy < (boxSize + padding)) return true;
+            }
+            return false;
+        }
+
+        // Visual effects
+        function shatterEffect(box, isCombo = false) {
+            const pieces = [];
+            const color = box.style.backgroundColor;
+            const size = box.offsetWidth;
+
+            for (let i = 0; i < (isCombo ? 12 : 6); i++) {
+                const piece = document.createElement('div');
+                piece.classList.add('shatter-piece');
+                piece.style.backgroundColor = color;
+                piece.style.left = `${box.offsetLeft + Math.random() * size}px`;
+                piece.style.top = `${box.offsetTop + Math.random() * size}px`;
+                piece.style.width = `${5 + Math.random() * 10}px`;
+                piece.style.height = piece.style.width;
+                piece.style.setProperty('--dx', (Math.random() - 0.5) * 4);
+                piece.style.setProperty('--dy', (Math.random() - 0.5) * 4);
+                piece.style.setProperty('--rotation', (Math.random() - 0.5) * 4);
+                gameArea.appendChild(piece);
+                pieces.push(piece);
+            }
+
+            box.remove();
+            setTimeout(() => pieces.forEach(p => p.remove()), 300);
+        }
+
+        function showCombo(combo) {
+            const comboDisplay = document.createElement('div');
+            comboDisplay.className = 'combo-display';
+            comboDisplay.textContent = `${combo} COMBO!`;
+            gameArea.appendChild(comboDisplay);
+            setTimeout(() => comboDisplay.remove(), 1000);
+        }
+
+        function addClickParticles(x, y, color) {
+            for (let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'click-particle';
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                particle.style.backgroundColor = color;
+                particle.style.animationDelay = `${i * 0.1}s`;
+                gameArea.appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        // Game elements
+        function createFruitBox(x, y, isSpecial = false) {
+            const box = document.createElement('div');
+            box.classList.add('color-box');
+            box.style.backgroundColor = isSpecial ? '#ffcc00' : '#e94e1b';
+            box.textContent = isSpecial ?
+                specialFruits[Math.floor(Math.random() * specialFruits.length)] :
+                fruitEmojis[Math.floor(Math.random() * fruitEmojis.length)];
+            box.style.left = x + 'px';
+            box.style.top = y + 'px';
+            box.frozen = false;
+            box.isSpecial = isSpecial;
+
+            box.addEventListener('click', (e) => {
+                if (!gameActive || box.frozen) return;
+
+                // Combo system
+                const now = Date.now();
+                if (now - lastClickTime < 1000) {
+                    comboCount++;
+                    if (comboCount >= 3) {
+                        playSound('combo-sound');
+                        showCombo(comboCount);
+                    }
+                } else {
+                    comboCount = 1;
+                }
+                lastClickTime = now;
+
+                // Scoring
+                const points = box.isSpecial ? 3 : 1;
+                score += points * Math.max(1, Math.floor(comboCount / 3));
+                scoreDisplay.textContent = `Оноо: ${score}`;
+
+                // Visual effects
+                addClickParticles(e.clientX, e.clientY, box.style.backgroundColor);
+                shatterEffect(box, comboCount >= 3);
+                playSound('pop-sound', 0.6);
+
+                // Game logic
+                boxes = boxes.filter(b => b !== box);
+                addFruitBox();
+                if (Math.random() < 0.1) addSpecialFruit();
+                checkLevel();
+            });
+
+            gameArea.appendChild(box);
+            boxes.push(box);
+            return box;
+        }
+
+        function addSpecialFruit() {
+            if (specialBox || !gameActive) return;
+            const pos = getNonOverlappingPosition();
+            if (pos) {
+                specialBox = createFruitBox(pos.x, pos.y, true);
+                setTimeout(() => {
+                    if (specialBox && specialBox.parentElement) {
+                        specialBox.remove();
+                        specialBox = null;
+                    }
+                }, 5000);
+            }
+        }
+
+        function createBombBox(x, y) {
+            const box = document.createElement('div');
+            box.classList.add('color-box');
+            box.style.backgroundColor = '#555';
+            box.textContent = bombEmoji;
+            box.style.left = x + 'px';
+            box.style.top = y + 'px';
+            box.frozen = false;
+
+            box.addEventListener('click', () => {
+                if (!gameActive || box.frozen) return;
+                playSound('bomb-sound');
+                gameOver('💥 Та бөмбөг дарлаа! Тоглоом дууслаа.');
+            });
+
+            gameArea.appendChild(box);
+            bombBox = box;
+
+            setTimeout(() => {
+                if (box.parentElement && gameActive) {
+                    box.remove();
+                    bombBox = null;
+                }
+            }, 5000);
+        }
+
+        function createIceBox(x, y) {
+            const box = document.createElement('div');
+            box.classList.add('color-box');
+            box.style.backgroundColor = '#a0d8f0';
+            box.textContent = iceEmoji;
+            box.style.left = x + 'px';
+            box.style.top = y + 'px';
+            box.frozen = false;
+
+            box.addEventListener('click', () => {
+                if (!gameActive || box.frozen) return;
+                box.frozen = true;
+                playSound('ice-sound', 0.4);
+                box.style.backgroundColor = '#4ca3d8';
+                box.style.opacity = '0.7';
+                freezeAll();
+            });
+
+            gameArea.appendChild(box);
+            iceBoxes.push(box);
+
+            setTimeout(() => {
+                if (!box.frozen && box.parentElement && gameActive) {
+                    box.remove();
+                    iceBoxes = iceBoxes.filter(i => i !== box);
+                }
+            }, 7000);
+        }
+
+        function freezeAll() {
+            const overlay = document.createElement('div');
+            overlay.className = 'frozen-overlay';
+            gameArea.appendChild(overlay);
+
+            gameArea.classList.add('frozen');
+            boxes.forEach(b => b.frozen = true);
+            bombBox && (bombBox.frozen = true);
+            specialBox && (specialBox.frozen = true);
+
+            setTimeout(() => {
+                gameArea.classList.remove('frozen');
+                overlay.remove();
+                boxes.forEach(b => b.frozen = false);
+                bombBox && (bombBox.frozen = false);
+                specialBox && (specialBox.frozen = false);
+            }, 3000);
+        }
+
+        // Game logic
+        function addFruitBox() {
+            if (!gameActive) return;
+            const pos = getNonOverlappingPosition();
+            if (pos) createFruitBox(pos.x, pos.y);
+        }
+
+        function placeBomb() {
+            const pos = getNonOverlappingPosition();
+            if (pos) createBombBox(pos.x, pos.y);
+        }
+
+        function checkLevel() {
+            if (score % 5 === 0) {
+                placeBomb();
+                const pos = getNonOverlappingPosition();
+                if (pos) createIceBox(pos.x, pos.y);
+                bombMoveInterval && clearInterval(bombMoveInterval);
+                bombMoveInterval = setInterval(moveBomb, Math.max(800, 4000 - score * 80));
+            }
+        }
+
+        function moveBomb() {
+            if (!gameActive || !bombBox) return;
+            const pos = getNonOverlappingPosition();
+            if (pos) {
+                bombBox.style.transition = 'left 0.5s ease, top 0.5s ease';
+                bombBox.style.left = pos.x + 'px';
+                bombBox.style.top = pos.y + 'px';
+                setTimeout(() => {
+                    bombBox.style.transition = '';
+                }, 500);
+            }
+        }
+
+        // Game control
+        function startGame() {
+            gameActive = true;
+            score = 0;
+            timeLeft = 30;
+            comboCount = 0;
+
+            // Clear existing elements
+            gameArea.innerHTML = '';
+            boxes = [];
+            iceBoxes = [];
+            bombBox = null;
+            specialBox = null;
+
+            // Update UI
+            scoreDisplay.textContent = 'Оноо: 0';
+            timerDisplay.textContent = 'Цаг: 30';
+            startBtn.style.display = 'none';
+            restartBtn.style.display = 'none';
+            updateMotivationMessage();
+
+            // Initial setup
+            for (let i = 0; i < 3; i++) {
+                const pos = getNonOverlappingPosition();
+                if (pos) createIceBox(pos.x, pos.y);
+            }
+
+            for (let i = 0; i < 7; i++) addFruitBox();
+            placeBomb();
+
+            // Clear existing intervals
+            timerId && clearInterval(timerId);
+            bombMoveInterval && clearInterval(bombMoveInterval);
+
+            // Start new intervals
+            timerId = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = `Цаг: ${timeLeft}`;
+                if (timeLeft <= 0) gameOver('⏱ Цаг дууслаа! Таны оноо: ' + score);
+            }, 1000);
+
+            bombMoveInterval = setInterval(moveBomb, 5000);
+        }
+
+        function gameOver(msg) {
+            clearInterval(timerId);
+            clearInterval(bombMoveInterval);
+            gameActive = false;
+            boxes.forEach(b => b.remove());
+            iceBoxes.forEach(i => i.remove());
+            if (bombBox) bombBox.remove();
+            if (specialBox) specialBox.remove();
+
+            // Update high score
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('fruitGameHighScore', highScore);
+                highScoreDisplay.textContent = `Дээд оноо: ${highScore}`;
+            }
+
+            // Show restart button
+            restartBtn.style.display = 'inline-block';
+            startBtn.style.display = 'none';
+
+            swal({
+                title: "Тоглоом дууслаа",
+                text: msg,
+                icon: score > highScore ? "success" : "info",
+                buttons: {
+                    cancel: "Гарах",
+                    confirm: "Дахан тоглох"
+                }
+            }).then((value) => {
+                if (value) {
+                    startGame();
+                }
+            });
+        }
+
+        // Event listeners
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+
+        // Initialize game when page loads
+        window.addEventListener('DOMContentLoaded', initGame);
+    </script>
+
+
+
+
+
+
+    <script src="common.js"></script>
+    <script src="userData.js"></script>
+</body>
+
+</html>
