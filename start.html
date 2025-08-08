@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="start.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="icon" href="images/img-0.png">
 
-    <title>Focus Up</title>
+    <title>MEMO!</title>
 </head>
 
 <body>
-
     <div class="header">
 
         <div class="logo">
@@ -30,24 +30,38 @@
         <div class="context">
             <div id="uria">Memo-тай хамт оюун ухаанаа хөгжүүлье!</div>
             <div id="uria2">Memo бол оюун ухаан, анхаарал, ой тогтоолтыг сонирхолтой аргаар хөгжүүлэх тоглоомын
-                платформ юм. Хамгийн бага 5 минутын тоглоомоор тархиа дасгалжуул! Яг одоо бүртгүүлээд тоглоорой</div>
-                <div>
-                    <button id="bt">Сорил өгөх</button>
-                    <button id="bt">Хэрхэн ажилладаг вэ?</button>
-                </div>
+                платформ юм. Өдөрт ердөө 5 минутын тоглоомоор тархиа дасгалжуул! Яг одоо бүртгүүлээд тоглоорой 😊</div>
+            <div>
+                <a href="info.html" target="_blank"><button id="bt">Сорил өгөх</button></a>
+                <button id="bt">Хэрхэн ажилладаг вэ?</button>
+            </div>
             <div class="games">
-                <div class="game">Game 1</div>
-                <div class="game">Game 2</div>
-                <div class="game">Game 3</div>
-                <div class="game">Game 4</div>
+                <a href="fruit.html" target="_blank" rel="noopener noreferrer">
+                    <div class="game" id="game1">
+                        <div class="name">Жимс, Бөмбөг, Мөс</div>
+                    </div>
+                </a>
+                <a href="memory-card.html" target="_blank" rel="noopener noreferrer">
+                    <div class="game" id="game2">
+                        <div class="name">Мемо карт</div>
+                    </div>
+                </a>
+                <a href="color.html" target="_blank" rel="noopener noreferrer">
+                    <div class="game" id="game3">
+                        <div class="name">Сонс & Тогтоо</div>
+                    </div>
+                </a>
+                <a href="english.html" target="_blank" rel="noopener noreferrer">
+                    <div class="game" id="game4">
+                        <div class="name">Word Wizard</div>
+                    </div>
+                </a>
             </div>
         </div>
 
         <div class="img">
             <img src="images/img-0.png" alt="">
         </div>
-
-
     </div>
 
 
@@ -128,7 +142,6 @@
         document.getElementById("signup").onclick = () => showForm("signup");
 
     </script>
-
 </body>
 
 </html>

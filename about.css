@@ -1,6 +1,4 @@
-body{
-  height: auto !important;
-}
+
 .members-container {
   margin-top: 6.5rem;
   width: 94%;
@@ -41,7 +39,7 @@ body{
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.347);
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 0;
@@ -53,6 +51,8 @@ body{
 
 .mem-name {
   font-size: 2rem;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+
 }
 .mem-name,
 .social-icons {
@@ -63,7 +63,7 @@ body{
 /* Social Icons */
 .social-icons {
   position: absolute;
-  bottom: 60px;
+  bottom: 70px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -108,10 +108,11 @@ body{
 }
 
 .scroller {
-  width: 95%;
+  width: 100%;
+  margin-top: -40px;
 }
 .scroller__inner img {
-    height: 100px;  /* Adjust this value to make images smaller or larger */
+    height: 200px;  /* Adjust this value to make images smaller or larger */
     width: auto;    /* Maintains aspect ratio */
     object-fit: cover; /* Ensures images fill the space without distortion */
     border-radius: 8px; /* Optional: adds rounded corners */
@@ -152,7 +153,7 @@ body{
 }
 
 .scroller[data-speed="fast"] {
-  --_animation-duration: 20s;
+  --_animation-duration: 15s;
 }
 
 .scroller[data-speed="slow"] {
@@ -165,3 +166,7 @@ body{
   }
 }
 
+
+#carouselExampleInterval{
+  margin-top: 40px
+}

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="mn">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Memo Dashboard</title>
-    <link rel="stylesheet" href="common.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="info.css">
 </head>
 
 <body>
@@ -14,32 +16,31 @@
             <div class="profile-img">
                 <img src="images/pro.jpg" alt="">
             </div>
+
             <div class="text">
                 <div style="font-weight: bold;">User Name </div>
                 <div style="color: gray; font-size: 12px;">LV. MASTER KING</div>
                 <div id="process"></div>
             </div>
-
         </div>
+
         <div class="point">
             YOUR POINT IS ... / 10000
         </div>
     </div>
 
-
-
     <div class="header">
 
         <div class="currency-container">
-    <div class="currency">
-      <img src="images/coin.png" alt="Gold Coin">
-      <span>4,892</span>
-    </div>
-    <div class="currency">
-      <img src="images/diamond.png" alt="Blue Crystal">
-      <span>8,219</span>
-    </div>
-  </div>
+            <div class="currency">
+                <img src="images/coin.png" alt="Gold Coin">
+                <span>4,892</span>
+            </div>
+            <div class="currency">
+                <img src="images/diamond.png" alt="Blue Crystal">
+                <span>8,219</span>
+            </div>
+        </div>
 
         <div class="btns">
             <a href="dashboard.html"><button>Профайл</button></a>
@@ -48,7 +49,628 @@
             <a href="about.html"><button>Бидний тухай</button></a>
         </div>
     </div>
+    <div id="digital">
+        <span>Анхаарал төвлөрөл ба Дижитал Хэрэглээ</span>
+    </div>
+    <div class="container">
+        <header>
 
+            <p class="subtitle">Цахим орчин дахь хэрэглэгчийн зан төлөв, анхаарал төвлөрөх хугацаа, оюуны ачааллын
+                шинжилгээ</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-value">47 сек</div>
+                    <div class="stat-label">Дундаж анхаарал төвлөрөх хугацаа</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📱</div>
+                    <div class="stat-value">142 мин</div>
+                    <div class="stat-label">Өдөр тутмын апп хэрэглээ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🧠</div>
+                    <div class="stat-value">68%</div>
+                    <div class="stat-label">Оюуны ачаалал</div>
+                </div>
+            </div>
+        </header>
+
+
+        <div class="charts-grid">
+            <!-- Анхаарал төвлөрөх хугацаа -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">⏳ Анхаарал төвлөрөх хугацаа</div>
+                    <div class="chart-source">Gloria Mark, UC Irvine</div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Браузерын хэрэглээ -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">🌐 Браузерын хэрэглээ</div>
+                    <div class="chart-source">StatCounter, 2024</div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="donutChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Апп хэрэглээ -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">📱 Апп хэрэглээ (мин/өдөр)</div>
+                    <div class="chart-source">DataReportal, 2024</div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Оюуны ачааллын түвшин -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">🧠 Оюуны ачааллын түвшин</div>
+                    <div class="chart-source">Neuroscience Lab, MIT</div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- 🧪 Асуулт Тест -->
+    <div class="test-section-container">
+        <section class="test-section">
+            <h2 class="section-title">Анхаарал Төвлөрөл Тест</h2>
+            <p class="test-description">3 хялбар асуултаар өөрийн анхаарал төвлөрөлийн түвшинг шалгаарай</p>
+
+            <div class="test-container">
+                <form id="attentionTest">
+                    <!-- Question 1 -->
+                    <div class="test-question">
+                        <div class="question-text">1. Та ажилдаа ойролцоогоор хэр удаан төвлөрч чаддаг вэ?</div>
+                        <div class="test-options">
+                            <label class="test-option">
+                                <input type="radio" name="q1" value="1" required>
+                                <span class="option-text">5 минут хүртэл</span>
+                            </label>
+                            <label class="test-option">
+                                <input type="radio" name="q1" value="2">
+                                <span class="option-text">6-10 минут</span>
+                            </label>
+                            <label class="test-option">
+                                <input type="radio" name="q1" value="3">
+                                <span class="option-text">11-20 минут</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="test-question">
+                        <div class="question-text">2. Дуу чимээ таныг хэр сатааруулдаг вэ?</div>
+                        <div class="test-options">
+                            <label class="test-option">
+                                <input type="radio" name="q2" value="1" required>
+                                <span class="option-text">Маш их</span>
+                            </label>
+                            <label class="test-option">
+                                <input type="radio" name="q2" value="2">
+                                <span class="option-text">Дунд зэрэг</span>
+                            </label>
+                            <label class="test-option">
+                                <input type="radio" name="q2" value="3">
+                                <span class="option-text">Бага</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="test-question">
+                        <div class="question-text">3. Утас хэрэглээ таныг хэр их сатааруулдаг вэ?</div>
+                        <div class="test-options">
+                            <label class="test-option">
+                                <input type="radio" name="q3" value="1" required>
+                                <span class="option-text">Өдөрт 5+ удаа</span>
+                            </label>
+                            <label class="test-option">
+                                <input type="radio" name="q3" value="2">
+                                <span class="option-text">Өдөрт 2-4 удаа</span>
+                            </label>
+                            <label class="test-option">
+                                <input type="radio" name="q3" value="3">
+                                <span class="option-text">Өдөрт 0-1 удаа</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Үр дүнг харах</button>
+                </form>
+
+                <div class="test-result" id="testResult"></div>
+                <div class="test-advice" id="testAdvice"></div>
+            </div>
+        </section>
+    </div>
+
+
+    <div class="advice-container">
+        <didv class="title">
+            Ой тогтоолт САЙЖРУУЛАХ 6 арга  <br><hr>
+        </didv>
+        <div class="advice">
+            <div class="ad"> <strong>1. Зөв хооллоорой </strong><br> <br>
+
+                Шинэ ногоог хүнсэндээ түлхүү хэрэглэх нь чухал. Брокколи, цэцэгт байцаа, самар болон улаан маханд
+                тархины
+                үйл ажиллагааг хамгаалдаг бодисууд агуулагддаг бөгөөд эдгээр хүнс мэдрэлийн эс үүсэхийг дэмждэг. Амьтны
+                өөх
+                тосноос гарган авдаг омега 3-ын хэрэглээг мөн ихэсгэх хэрэгтэй. Боловсруулсан ургамлын тосныхоо оронд
+                загасны тосыг хэрэглээд үзээрэй.</div>
+
+            <div class="ad"> <strong>2. Дасгал хөдөлгөөн хийгтүн</strong><br> <br>
+
+                Дасгал хөдөлгөөн хийснээр мэдрэлийн эсүүд олширч, хоорондоо холбогдсоноор баргийн гэмтэлд өртдөггүй
+                болдог.
+                Ингэснээр тархи тань өөрийнхөө боломжит дээд хэмжээгээр ажиллаж чадна гэсэн үг юм. Дасгал хөдөлгөөн хийх
+                үед
+                тархинд мэдрэлийн эсүүдийг тэтгэгч уургууд ялгарч байдаг. Эдгээр нь мэдрэлийн эсүүдийн үйл ажиллагааг
+                дэмждэг, ой тогтоолтыг сайжруулдаг бусад химийн бодисуудын үүсэлтийг өдөөдөг юм. </div>
+
+            <div class="ad"> <strong>3. Нэг дор олон зүйл хийдгээ болих хэрэгтэй</strong> <br> <br>
+
+                Нэг дор аль болох олон зүйлийг, аль болох хурдан хугацаанд амжуулахыг хичээснээрээ харин ч ажил улам
+                удааширч, алдаа гаргах магадлал ихэсдэг байна. Судлаачдын үзэж буйгаар мэдээллийг тархиныхаа ой санамжид
+                байрлуулахын тулд хамгийн багадаа 8 секунд зарцуулах шаардлагатай аж. Харин нэг зүйл дээр бүх анхаарлаа
+                төвлөрүүлж чадвал тухайн зүйлээ хамгийн сайнаар гүйцэтгэх боломжтой. Хэрэв анхаарлаа төвлөрүүлэх
+                бэрхшээлтэй
+                санагддаг бол бясалгал хийгээд үзээрэй.</div>
+
+            <div class="ad"> <strong>4. Сайн унтаж амарч байгаарай </strong><br> <br>
+
+                Өдрийн турш тархинд явагдах үйл ажиллагаануудаас ялгаран гарсан хортой бодисууд зөвхөн унтаж байх үед л
+                шимэгдэн алга болдог байна. Нойргүй удаан явах үед эдгээр бодисууд хуримтлагдан шинэ мэдээлэл хүлээн
+                авах,
+                мөн түүнийг хадгалах үйл ажиллагаанд саатал учруулдаг. Түүнчлэн сэрүүн үед олж авсан мэдээллүүдийг тархи
+                нойрон дунд хэрэгтэйг нь авч үлдэн, хэрэггүйг нь мартуулах “боловсруулалт” хийдэг.</div>
+
+            <div class="ad"> <strong>5. Оюун ухааны тоглоом тогло</strong> <br> <br>
+
+                Тархиндаа байнга сонирхолтой, хөгжилтэй мэдээлэл өгч байхгүй бол амархан “мууддаг”. Үүнээс сэргийлэхийн
+                тулд
+                тархиа байнга өдөөж байх хэрэгтэй. Тархи хөгжүүлэх олон төрлийн тоглоом цахим ертөнцөд байдаг бөгөөд
+                өдөрт
+                хорин минут л зарцуулахад хангалттай. Түүнчлэн нэг даалгавар дээр 7 минутаас хэтрэхгүй бол сайн.</div>
+
+            <div class="ad"> <strong>6. Шинэ чадварт суралцагтун</strong> <br> <br>
+
+                “Утга учиртай” үйлийг хийснээр стрессээс үүдэлтэй эмгэгүүд болон зөнөгрөлөөс сэргийлэх боломжтойн дээр
+                биеийн ерөнхий эрүүл мэнд ч сайжирна. Тархиныхаа үйл ажиллагааг сайжруулах нэг чухал арга бол аливаа
+                хийж
+                буй зүйлдээ анхаарлаа сайн төвлөрүүлж, сэтгэл гаргах явдал юм. Өөрөөр хэлбэл таны сонирхлыг бүрэн татаж
+                чадахуйц, түүнийгээ хийж байхдаа огт сатаарахгүй байж чадах буюу хамгийн гол нь таны хувьд маш их утга
+                учиртай байхуйц чадварт суралцах хэрэгтэй. </div>
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        // Line Chart
+        const lineCtx = document.getElementById('lineChart').getContext('2d');
+        const lineGradient = lineCtx.createLinearGradient(0, 0, 0, 400);
+        lineGradient.addColorStop(0, 'rgba(138, 43, 226, 0.3)');
+        lineGradient.addColorStop(1, 'rgba(138, 43, 226, 0.05)');
+
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: ['2004', '2012', '2020', '2023'],
+                datasets: [{
+                    label: 'Хугацаа (сек)',
+                    data: [150, 75, 47, 8],
+                    borderColor: '#8a2be2',
+                    backgroundColor: lineGradient,
+                    borderWidth: 4,
+                    pointRadius: 8,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#8a2be2',
+                    pointBorderWidth: 3,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(90, 50, 140, 0.9)',
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 14
+                        },
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(138, 43, 226, 0.1)'
+                        },
+                        ticks: {
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            },
+                            color: '#5d3a87'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            },
+                            color: '#5d3a87'
+                        }
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+
+        // Doughnut Chart
+        new Chart(document.getElementById('donutChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Chrome', 'Safari', 'Firefox', 'Opera', 'Edge'],
+                datasets: [{
+                    label: 'Browser Share',
+                    data: [40, 25, 15, 10, 10],
+                    backgroundColor: [
+                        '#8a2be2',
+                        '#ff00cc',
+                        '#9370db',
+                        '#ba55d3',
+                        '#da70d6'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            },
+                            color: '#5d3a87',
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(90, 50, 140, 0.9)',
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 14
+                        },
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
+                cutout: '60%',
+                animation: {
+                    animateRotate: true,
+                    duration: 2000
+                }
+            }
+        });
+
+        // Bar Chart
+        new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                labels: ['YouTube', 'Instagram', 'TikTok', 'Facebook'],
+                datasets: [{
+                    label: 'Минут/өдөр',
+                    data: [45, 32, 38, 27],
+                    backgroundColor: [
+                        'rgba(138, 43, 226, 0.8)',
+                        'rgba(255, 0, 204, 0.8)',
+                        'rgba(147, 112, 219, 0.8)',
+                        'rgba(186, 85, 211, 0.8)'
+                    ],
+                    borderRadius: 10,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(90, 50, 140, 0.9)',
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 14
+                        },
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(138, 43, 226, 0.1)'
+                        },
+                        ticks: {
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            },
+                            color: '#5d3a87'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            },
+                            color: '#5d3a87'
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1800,
+                    easing: 'easeOutBounce'
+                }
+            }
+        });
+
+        // Radar Chart
+        const radarCtx = document.getElementById('radarChart').getContext('2d');
+        const radarGradient = radarCtx.createLinearGradient(0, 0, 0, 400);
+        radarGradient.addColorStop(0, 'rgba(138, 43, 226, 0.3)');
+        radarGradient.addColorStop(1, 'rgba(138, 43, 226, 0.05)');
+
+        new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Хичээл', 'Тоглоом', 'Видео', 'Сошиал', 'Ажил'],
+                datasets: [{
+                    label: 'Оюуны ачаалал',
+                    data: [80, 40, 65, 75, 85],
+                    backgroundColor: radarGradient,
+                    borderColor: '#8a2be2',
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#8a2be2',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(90, 50, 140, 0.9)',
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 14
+                        },
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: {
+                            color: 'rgba(138, 43, 226, 0.1)'
+                        },
+                        grid: {
+                            color: 'rgba(138, 43, 226, 0.1)'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            },
+                            color: '#5d3a87'
+                        },
+                        ticks: {
+                            display: false,
+                            stepSize: 20
+                        },
+                        min: 0,
+                        max: 100
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeInOutSine'
+                }
+            }
+        });
+
+
+
+        function animateProgress() {
+            if (progress < maxProgress) {
+                progress += 0.7;
+                if (progress > maxProgress) progress = maxProgress;
+
+                progressChart.data.datasets[0].data[0] = progress;
+                progressChart.data.datasets[0].data[1] = 100 - progress;
+                progressChart.update();
+
+                document.getElementById('progressText').textContent = Math.round(progress) + '%';
+                requestAnimationFrame(animateProgress);
+            }
+        }
+
+        // Start animation after a short delay
+        setTimeout(animateProgress, 500);
+
+
+
+        function toggleSection(id) {
+            const allSections = document.querySelectorAll('.toggle-section');
+            const target = document.getElementById(id);
+
+            allSections.forEach(section => {
+                if (section !== target) {
+                    section.style.display = 'none';
+                }
+            });
+
+            if (target.style.display === 'none' || target.style.display === '') {
+                target.style.display = 'block';
+                target.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                target.style.display = 'none';
+            }
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('attentionTest');
+            const resultDiv = document.getElementById('testResult');
+            const adviceDiv = document.getElementById('testAdvice');
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Validate all questions are answered
+                const allAnswered = Array.from(form.querySelectorAll('.test-question'))
+                    .every(question => {
+                        const name = question.querySelector('input[type="radio"]').name;
+                        return form.querySelector(`input[name="${name}"]:checked`);
+                    });
+
+                if (!allAnswered) {
+                    alert('Бүх асуултанд хариулах шаардлагатай.');
+                    return;
+                }
+
+                // Calculate total score
+                const totalScore = Array.from(form.querySelectorAll('input[type="radio"]:checked'))
+                    .reduce((sum, radio) => sum + parseInt(radio.value), 0);
+
+                // Evaluate results
+                const results = [
+                    {
+                        range: [3, 5],
+                        evaluation: `Анхаарал төвлөрөл: Сайн биш (${totalScore} оноо)`,
+                        advice: `Төлөв: Төвлөрөл сул, ажлын бүтээмж муу.\n\nЗөвлөмж:\n- Тогтсон унтах цаг барих\n- Чимээ шуугиан багатай орчин бүрдүүлэх\n- Утас хэрэглээг хязгаарлах`
+                    },
+                    {
+                        range: [6, 7],
+                        evaluation: `Анхаарал төвлөрөл: Дунд зэрэг (${totalScore} оноо)`,
+                        advice: `Төлөв: Зарим үед төвлөрдөг ч амархан сатаардаг.\n\nЗөвлөмж:\n- Ажлын орчныг цэвэр байлгах\n- Өдөр бүр 20-30 минут дасгал хийх\n- Утас хэрэглээг төлөвлөх`
+                    },
+                    {
+                        range: [8, 9],
+                        evaluation: `Анхаарал төвлөрөл: Сайн (${totalScore} оноо)`,
+                        advice: `Төлөв: Төвлөрөл сайн, сатаарах нь ховор.\n\nЗөвлөмж:\n- Стрессээ зохицуулах\n- Шинэ сорилтууд хүлээж авах\n- Эрүүл хооллолт, амралтыг дэмжих`
+                    }
+                ];
+
+                // Find matching result
+                const result = results.find(r => totalScore >= r.range[0] && totalScore <= r.range[1]) ||
+                    { evaluation: "Үр дүн тодорхойгүй", advice: "" };
+
+                // Display results
+                resultDiv.innerHTML = `<h3 style="color: #7b2ff7; margin-bottom: 1rem;">${result.evaluation}</h3>`;
+                adviceDiv.textContent = result.advice;
+
+                // Show with animations
+                resultDiv.style.display = 'block';
+                adviceDiv.style.display = 'block';
+
+                // Smooth scroll to results
+                setTimeout(() => {
+                    resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            });
+        });
+    </script>
     <script src="userData.js"></script>
 </body>
 
