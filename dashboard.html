@@ -61,32 +61,32 @@
             <div style="display: flex; justify-content: center;"><img
                     src="images/avatar (2).png" alt=""></div>
             <div style="font-weight: bold; font-size: 13PX;">TANDUKIN</div>
-            <div style="color: gray; font-size: 12PX;">LEVEL 800</div>
+            <div style="color: gray; font-size: 12PX;">LEVEL 500</div>
         </div>
         <div class="hero-card">
             <div style="display: flex; justify-content: center;"><img
                     src="images/avatar (3).png" alt=""></div>
             <div style="font-weight: bold; font-size: 13PX;">LOMPILOM</div>
-            <div style="color: gray; font-size: 12PX;">LEVEL 800</div>
+            <div style="color: gray; font-size: 12PX;">LEVEL 300</div>
         </div>
         <div class="hero-card">
             <div style="display: flex; justify-content: center;"><img
                     src="images/avatar (4).png" alt=""></div>
             <div style="font-weight: bold; font-size: 13PX;">MEMO</div>
-            <div style="color: gray; font-size: 12PX;">LEVEL 800</div>
+            <div style="color: gray; font-size: 12PX;">LEVEL 100</div>
         </div>
         <div class="hero-card">
             <div style="display: flex; justify-content: center;"><img
                     src="images/avatar (5).png" alt=""></div>
             <div style="font-weight: bold; font-size: 13PX;">CEMILOO
             </div>
-            <div style="color: gray; font-size: 12PX;">LEVEL 800</div>
+            <div style="color: gray; font-size: 12PX;">LEVEL 50</div>
         </div>
         <div class="hero-card">
             <div style="display: flex; justify-content: center;"><img
                     src="images/avatar (6).png" alt=""></div>
             <div style="font-weight: bold; font-size: 13PX;">DURIDURI</div>
-            <div style="color: gray; font-size: 12PX;">LEVEL 800</div>
+            <div style="color: gray; font-size: 12PX;">LEVEL 10</div>
         </div>
 
 
@@ -111,57 +111,7 @@
     </div>
 
 
-
-
-
-
-
-
-
-
-
-
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Hero image selection
-        const heroCards = document.querySelectorAll('.hero-card img');
-        const mainHero = document.querySelector('.hero img');
-        const profileHero = document.querySelector('.profile-img img');
-
-        heroCards.forEach(card => {
-            card.addEventListener('click', () => {
-                if (mainHero) mainHero.src = card.src;
-                if (profileHero) profileHero.src = card.src;
-
-                // Clear previous selection
-                heroCards.forEach(c => c.classList.remove('selected'));
-                // Add border to new selection
-                card.classList.add('selected');
-            });
-        });
-
-        // Background color switcher
-        const colorBoxes = document.querySelectorAll('.color');
-
-        colorBoxes.forEach(box => {
-            box.addEventListener('click', () => {
-                document.body.style.backgroundColor = box.style.backgroundColor;
-
-                // Visual feedback
-                colorBoxes.forEach(c => c.classList.remove('selected'));
-                box.classList.add('selected');
-            });
-        });
-
-        // Optional username display from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const username = urlParams.get('user') || 'User';
-        const usernameElement = document.getElementById('username');
-        if (usernameElement) {
-            usernameElement.innerText = username;
-        }
-    });
-</script>
+    
 <script src="userData.js"></script>
 
 

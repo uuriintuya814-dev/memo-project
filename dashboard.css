@@ -261,6 +261,7 @@ body {
   font-weight: bold;
 }
 
+
 .pick {
   position: absolute;
   right: 2.5rem;
@@ -289,7 +290,6 @@ body {
 
 .selected {
   border: 1px solid #ff4fab;
-  border-radius: 10px;
   box-shadow: 0 0 10px #fc55ab80;
   transition: all 0.2s ease;
 }

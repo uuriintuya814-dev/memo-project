@@ -1,6 +1,8 @@
+body{
+  height: auto !important;
+}
 .members-container {
   margin-top: 6.5rem;
-  border: 1px solid red;
   width: 94%;
   height: 60vh;
   display: grid;
@@ -107,6 +109,12 @@
 
 .scroller {
   width: 95%;
+}
+.scroller__inner img {
+    height: 100px;  /* Adjust this value to make images smaller or larger */
+    width: auto;    /* Maintains aspect ratio */
+    object-fit: cover; /* Ensures images fill the space without distortion */
+    border-radius: 8px; /* Optional: adds rounded corners */
 }
 
 .scroller__inner {
