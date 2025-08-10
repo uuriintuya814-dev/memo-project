@@ -346,8 +346,26 @@
 
         initGame();
     </script>
+    <script>// Calculate rewards
+        const reward = GameRewards.award('word', correctAnswers, totalQuestions);
+
+        // Show celebration with rewards
+        celebration.innerHTML = `
+    <h2>Great job! 🎉</h2>
+    <p>You earned:</p>
+    <p><span class="xp">${score}</span> XP!</p>
+    <p>+${reward.coins} coins</p>
+    <p>+${reward.diamonds} diamonds</p>
+    <p>+${reward.points} points</p>
+    <button class="primary" id="play-again-btn">Try Again</button>
+`;
+
+        // Optionally show the sweetalert notification
+        GameRewards.showReward(reward);</script>
+    <script src="currencyManager.js"></script>
+    <script src="gameRewards.js"></script>
     <script src="common.js"></script>
-    <script src="userData.js"></script>
+    <script src="game-specific.js"></script>
 </body>
 
 </html>

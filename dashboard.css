@@ -293,3 +293,11 @@ body {
   box-shadow: 0 0 10px #fc55ab80;
   transition: all 0.2s ease;
 }
+.hero-card.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hero-card.locked:hover {
+    transform: none;
+}
